@@ -1,0 +1,20 @@
+{
+    "name": "Node.js",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "davidanson.vscode-markdownlint",
+                "vue.volar"
+            ]
+        }
+    },
+    "forwardPorts": [
+        4173,
+        5173
+    ],
+    "remoteUser": "node"
+}
