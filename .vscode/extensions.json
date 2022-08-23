@@ -1,7 +1,11 @@
 {
   "recommendations": [
+    "howardzuo.vscode-npm-dependency",
+    "editorconfig.editorconfig",
+    "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "davidanson.vscode-markdownlint",
+    "rvest.vs-code-prettier-eslint",
+    "stylelint.vscode-stylelint",
     "vue.volar"
   ]
 }

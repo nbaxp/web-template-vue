@@ -1,31 +1,37 @@
-<script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <van-config-provider v-if="isMobile()" :theme="appStore.isDark ? 'dark' : 'light'" :size="appStore.size">
+    <router-view />
+  </van-config-provider>
+  <el-config-provider v-else :locale="zhCn">
+    <router-view />
+  </el-config-provider>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<script setup>
+import zhCn from 'element-plus/lib/locale/lang/zh-cn';
+
+import { useAppStore } from './store';
+import { isMobile } from './utils';
+
+const appStore = useAppStore();
+
+const isDark = useMediaQuery('(prefers-color-scheme: dark)');
+
+watchEffect(() => {
+  const darkClass = 'dark';
+  const toDark = () => document.documentElement.classList.add(darkClass);
+  const toLight = () => document.documentElement.classList.remove(darkClass);
+
+  if (appStore.mode === 'auto') {
+    isDark.value ? toDark() : toLight();
+  } else if (appStore.mode === 'dark') {
+    toDark();
+  } else if (appStore.mode === 'light') {
+    toLight();
+  }
+});
+
+watchEffect(() => {
+  document.documentElement.style.setProperty('--el-color-primary', appStore.themeColor);
+});
+</script>

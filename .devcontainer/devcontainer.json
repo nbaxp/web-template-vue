@@ -1,20 +1,21 @@
 {
-    "name": "Node.js",
-    "build": {
-        "dockerfile": "Dockerfile"
-    },
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "dbaeumer.vscode-eslint",
-                "davidanson.vscode-markdownlint",
-                "vue.volar"
-            ]
-        }
-    },
-    "forwardPorts": [
-        4173,
-        5173
-    ],
-    "remoteUser": "node"
+  "name": "Node.js",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "howardzuo.vscode-npm-dependency",
+        "editorconfig.editorconfig",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "rvest.vs-code-prettier-eslint",
+        "stylelint.vscode-stylelint",
+        "vue.volar"
+      ]
+    }
+  },
+  "forwardPorts": [4173, 5173],
+  "remoteUser": "node"
 }
