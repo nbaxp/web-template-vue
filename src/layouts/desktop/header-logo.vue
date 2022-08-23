@@ -19,8 +19,8 @@ const appStore = useAppStore();
 }
 
 h1 {
-  font-size: 18px;
   color: var(--el-color-primary);
+  font-size: 18px;
   line-height: 1.5em;
 }
 </style>

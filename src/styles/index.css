@@ -24,37 +24,37 @@ body {
   border-bottom: solid 1px var(--el-menu-border-color);
 }
 
-.el-menu--horizontal{
+.el-menu--horizontal {
   border-bottom: none;
 }
 
-.el-menu--vertical{
+.el-menu--vertical {
   min-height: 100%;
 }
 
-.el-main{
-  min-height: calc( 100% - 60px );
+.el-main {
+  min-height: calc(100% - 60px);
 }
 
 .el-footer {
-  width:100%;
+  width: 100%;
   padding: 0;
   border-top: solid 1px var(--el-menu-border-color);
 }
 
-.el-scrollbar{
-  width:100%;
+.el-scrollbar {
+  width: 100%;
 }
 
-.el-scrollbar__view{
+.el-scrollbar__view {
   height: 100%;
 }
 
-.between{
+.between {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height:100%;
+  height: 100%;
 }
 
 .center {
