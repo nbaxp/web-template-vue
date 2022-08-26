@@ -20,7 +20,7 @@ body {
 #app .el-header {
   position: fixed;
   width: 100%;
-  padding:0;
+  padding: 0;
   background-color: var(--el-menu-bg-color);
   border-bottom: solid 1px var(--el-menu-border-color);
 }
@@ -73,11 +73,11 @@ body {
   height: 100%;
 }
 
-.aside .logo{
+.aside .logo {
   box-sizing: border-box;
-  margin-left:20px;
+  margin-left: 20px;
 }
 
-.aside.collapse .logo{
+.aside.collapse .logo {
   width: 43px;
 }
