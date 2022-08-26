@@ -75,11 +75,12 @@ const routes = [
         component: view('admin/list'),
         meta: {
           title: '列表页',
+          cached: true,
         },
       },
       {
         path: 'chart',
-        component: view('admin/dashboard'),
+        component: view('admin/chart'),
         meta: {
           title: '图表页',
         },

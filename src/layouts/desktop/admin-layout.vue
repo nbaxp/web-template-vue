@@ -13,8 +13,15 @@
       </el-aside>
       <el-container class="main">
         <el-scrollbar>
+          <layout-tab />
           <el-main class="el-main">
-            <router-view />
+            <layout-breadcrumb v-if="appStore.showBreadcrumb" />
+            <router-view v-slot="{ Component }">
+              <keep-alive>
+                <component :is="Component" v-if="$route.meta.cached" :key="$route.fullPath" />
+              </keep-alive>
+              <component :is="Component" v-if="!$route.meta.cached" />
+            </router-view>
           </el-main>
           <el-footer>
             <layout-footer />
@@ -29,8 +36,10 @@
 <script setup>
 import { useAppStore } from '~/store';
 
+import LayoutBreadcrumb from './layout-breadcrumb.vue';
 import LayoutFooter from './layout-footer.vue';
 import LayoutHeader from './layout-header.vue';
+import LayoutTab from './layout-tab.vue';
 import MenuItem from './menu-item.vue';
 
 const appStore = useAppStore();

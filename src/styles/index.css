@@ -10,7 +10,7 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background-color: var(--el-color-bg);
+  background-color: var(--el-bg-color-page);
 }
 
 .root {
@@ -30,6 +30,10 @@ body {
 
 .el-menu--vertical {
   min-height: 100%;
+}
+
+.router-tab .el-tabs__content {
+  display: none;
 }
 
 .el-main {

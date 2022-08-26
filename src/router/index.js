@@ -3,7 +3,7 @@ import 'nprogress/nprogress.css';
 import NProgress from 'nprogress';
 import { createRouter, createWebHashHistory } from 'vue-router';
 
-import { useUserStore } from '~/store';
+import { useRouterStore, useUserStore } from '~/store';
 
 import desktopRoutes from './desktopRoutes';
 import mobileRoutes from './mobileRoutes';
@@ -41,8 +41,8 @@ router.beforeEach(async (to, from, next) => {
 router.afterEach((to, from) => {
   NProgress.done();
   console.log(`router.afterEach:${from.path}->${to.path}`);
-  console.log(to.matched);
-  console.log(router.options.routes);
+  const routerStore = useRouterStore();
+  routerStore.add(to);
 });
 
 export default router;
