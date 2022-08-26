@@ -9,9 +9,12 @@ const { publicKey, privateKey } = await crypto.subtle.generateKey(
   true,
   ['sign', 'verify'],
 );
+const issuer = 'urn:example:issuer';
+const audience = 'urn:example:audience';
 
 export default function useMock() {
-  Mock.mock('/api/login', 'POST', (request) => {
+  // /api/user/login
+  Mock.mock('/api/user/login', 'POST', (request) => {
     const { userName, password } = JSON.parse(request.body ?? '{}');
     if (!userName) {
       return { code: 400, message: '用户名不能为空' };
@@ -20,8 +23,6 @@ export default function useMock() {
       return { code: 400, message: '密码不能为空' };
     }
     if (userName === 'admin' && password === '123456') {
-      const issuer = 'urn:example:issuer';
-      const audience = 'urn:example:audience';
       const claims = { user: userName };
       return new Promise((resolve) => {
         new jose.SignJWT(claims)
@@ -34,7 +35,7 @@ export default function useMock() {
           .then((jwt) => {
             jose.jwtVerify(jwt, publicKey, { issuer, audience }).then((json) => {
               const code = 200;
-              const data = { jwt, payload: json.payload };
+              const data = { token: jwt, payload: json.payload };
               resolve({
                 code,
                 data,
@@ -44,5 +45,32 @@ export default function useMock() {
       });
     }
     return { code: 400, message: '用户名或密码错误' };
+  });
+  // /api/user/info
+  Mock.mock('/api/user/info', 'POST', (request) => {
+    const [, token] = request.headers.Authorization.split(' ');
+    console.log(token);
+    const code = 200;
+    const data = {
+      name: '管理员',
+      avatar: '/upload/avatar.svg',
+    };
+    return new Promise((resolve) => {
+      jose
+        .jwtVerify(token, publicKey, {
+          issuer,
+          audience,
+        })
+        .then((result) => {
+          const { payload } = result;
+          if (payload.user === 'admin') {
+            data.roles = ['admin'];
+          }
+          resolve({
+            code,
+            data,
+          });
+        });
+    });
   });
 }

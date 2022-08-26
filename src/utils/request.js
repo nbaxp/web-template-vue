@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 
+import { useUserStore } from '~/store';
+
 const getErrorMessageByCode = (code) => {
   let message = null;
   if (code === 400) {
@@ -30,7 +32,14 @@ const request = axios.create(globalConfig);
 
 request.interceptors.request.use(
   function (config) {
-    // 在发送请求之前做些什么
+    const userStore = useUserStore();
+    const { token } = userStore;
+    if (token) {
+      if (!Object.prototype.hasOwnProperty.call(config, 'headers')) {
+        Object.assign(config, { headers: {} });
+      }
+      Object.assign(config.headers, { Authorization: `Bearer ${token}` });
+    }
     return config;
   },
   function (error) {

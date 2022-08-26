@@ -2,7 +2,9 @@
   <el-container class="default-layout h-full">
     <el-scrollbar>
       <el-header class="el-header">
-        <layout-header />
+        <div class="block-container">
+          <layout-header />
+        </div>
       </el-header>
       <el-main class="el-main w-full">
         <div class="block-container">
@@ -10,7 +12,9 @@
         </div>
       </el-main>
       <el-footer>
-        <layout-footer />
+        <div class="block-container">
+          <layout-footer />
+        </div>
       </el-footer>
       <el-backtop target=".default-layout > .el-scrollbar > .el-scrollbar__wrap" />
     </el-scrollbar>
@@ -33,6 +37,7 @@ import LayoutHeader from './layout-header.vue';
 
 .block-container {
   width: 1200px;
+  height: 100%;
   margin: auto;
 }
 </style>

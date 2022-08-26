@@ -1,5 +1,7 @@
 <template>
-  <component :is="svg" />
+  <el-icon style="margin-right: 5px">
+    <component :is="svg" />
+  </el-icon>
 </template>
 
 <script setup>

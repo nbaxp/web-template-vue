@@ -40,14 +40,10 @@
             :show-password="value.showPassword"
           >
             <template v-if="value.prefix" #prefix>
-              <el-icon class="el-input__icon">
-                <svg-icon :name="value.prefix" />
-              </el-icon>
+              <svg-icon class="el-input__icon" :name="value.prefix" />
             </template>
             <template v-if="value.suffix" #suffix>
-              <el-icon class="el-input__icon">
-                <svg-icon :name="value.suffix" />
-              </el-icon>
+              <svg-icon class="el-input__icon" :name="value.suffix" />
             </template>
           </el-input>
         </el-form-item>

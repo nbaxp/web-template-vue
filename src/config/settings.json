@@ -6,5 +6,6 @@
   "size": "default",
   "locale": "zh",
   "showBreadcrumb": true,
+  "isUseTabsRouter": true,
   "menuCollapse": false
 }

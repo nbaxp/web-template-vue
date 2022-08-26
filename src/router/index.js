@@ -1,9 +1,10 @@
 import 'nprogress/nprogress.css';
 
+import { useTitle } from '@vueuse/core';
 import NProgress from 'nprogress';
 import { createRouter, createWebHashHistory } from 'vue-router';
 
-import { useRouterStore, useUserStore } from '~/store';
+import { useAppStore, useRouterStore, useUserStore } from '~/store';
 
 import desktopRoutes from './desktopRoutes';
 import mobileRoutes from './mobileRoutes';
@@ -41,8 +42,17 @@ router.beforeEach(async (to, from, next) => {
 router.afterEach((to, from) => {
   NProgress.done();
   console.log(`router.afterEach:${from.path}->${to.path}`);
+  useTitle().value = to.meta?.title;
+  const appStore = useAppStore();
   const routerStore = useRouterStore();
-  routerStore.add(to);
+  routerStore.excludes = [];
+  if (to.path.startsWith('/admin/')) {
+    if (appStore.isUseTabsRouter) {
+      routerStore.add(to);
+    } else {
+      routerStore.routes = [to];
+    }
+  }
 });
 
 export default router;

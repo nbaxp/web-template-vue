@@ -43,6 +43,9 @@
     <el-form-item prop="appStore.showBreadcrumb" label="显示面包屑">
       <el-switch v-model="appStore.showBreadcrumb" />
     </el-form-item>
+    <el-form-item prop="appStore.isUseTabsRouter" label="多标签Tab页">
+      <el-switch v-model="appStore.isUseTabsRouter" />
+    </el-form-item>
     <el-form-item prop="appStore.menuCollapse" label="折叠菜单">
       <el-switch v-model="appStore.menuCollapse" />
     </el-form-item>

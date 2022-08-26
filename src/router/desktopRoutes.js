@@ -16,7 +16,7 @@ const routes = [
     component: layout('default-layout'),
     meta: {
       title: '前台',
-      icon: 'i-ion-home-outline',
+      icon: 'home',
     },
     children: [
       {
@@ -29,6 +29,7 @@ const routes = [
     path: '/login',
     component: view('login'),
     meta: {
+      title: '登录',
       hide: true,
     },
   },
@@ -59,7 +60,7 @@ const routes = [
     redirect: '/admin/home',
     meta: {
       title: '后台',
-      icon: 'i-administator-line',
+      icon: 'administator',
     },
     children: [
       {
@@ -67,6 +68,7 @@ const routes = [
         component: view('admin/home'),
         meta: {
           title: '仪表盘',
+          icon: 'page',
           requiresAuth: true,
         },
       },
@@ -75,6 +77,7 @@ const routes = [
         component: view('admin/list'),
         meta: {
           title: '列表页',
+          icon: 'page',
           cached: true,
         },
       },
@@ -83,6 +86,7 @@ const routes = [
         component: view('admin/chart'),
         meta: {
           title: '图表页',
+          icon: 'page',
         },
       },
       {
@@ -90,6 +94,7 @@ const routes = [
         redirect: '/admin/user/home',
         meta: {
           title: '用户中心',
+          icon: 'group',
         },
         children: [
           {
@@ -97,6 +102,7 @@ const routes = [
             component: view('admin/user/home'),
             meta: {
               title: '用户管理',
+              icon: 'user',
             },
           },
           {
@@ -104,6 +110,7 @@ const routes = [
             component: view('admin/user/role'),
             meta: {
               title: '角色管理',
+              icon: 'role',
             },
           },
           {
@@ -111,6 +118,7 @@ const routes = [
             component: view('admin/user/permission'),
             meta: {
               title: '权限管理',
+              icon: 'permission',
             },
           },
         ],

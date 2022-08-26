@@ -1,7 +1,7 @@
 <template>
   <el-container class="h-full">
     <el-header>
-      <layout-header />
+      <layout-header has-aside />
     </el-header>
     <el-container class="body h-full">
       <el-aside width="auto">
@@ -13,14 +13,16 @@
       </el-aside>
       <el-container class="main">
         <el-scrollbar>
-          <layout-tab />
+          <layout-tab v-if="appStore.isUseTabsRouter" />
           <el-main class="el-main">
             <layout-breadcrumb v-if="appStore.showBreadcrumb" />
-            <router-view v-slot="{ Component }">
-              <keep-alive>
-                <component :is="Component" v-if="$route.meta.cached" :key="$route.fullPath" />
-              </keep-alive>
-              <component :is="Component" v-if="!$route.meta.cached" />
+            <router-view v-if="!isRefreshing" v-slot="{ Component }">
+              <transition name="fade" mode="out-in">
+                <keep-alive v-if="appStore.isUseTabsRouter && $route.meta.cached" :excludes="routerStore.excludes">
+                  <component :is="Component" :key="$route.fullPath" />
+                </keep-alive>
+                <component :is="Component" v-else />
+              </transition>
             </router-view>
           </el-main>
           <el-footer>
@@ -34,7 +36,7 @@
 </template>
 
 <script setup>
-import { useAppStore } from '~/store';
+import { useAppStore, useRouterStore } from '~/store';
 
 import LayoutBreadcrumb from './layout-breadcrumb.vue';
 import LayoutFooter from './layout-footer.vue';
@@ -43,6 +45,9 @@ import LayoutTab from './layout-tab.vue';
 import MenuItem from './menu-item.vue';
 
 const appStore = useAppStore();
+const routerStore = useRouterStore();
+
+const isRefreshing = computed(() => routerStore.isRefreshing);
 </script>
 
 <style scoped>

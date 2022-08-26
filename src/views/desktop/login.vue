@@ -31,9 +31,11 @@
 <script setup>
 import AppForm from '~/components/app-form.vue';
 import HeaderLogo from '~/layouts/desktop/header-logo.vue';
+import { useUserStore } from '~/store';
+import request from '~/utils/request';
 
 const model = reactive({
-  action: 'login',
+  action: 'user/login',
   data: null,
   schema: {
     title: '登录',
@@ -43,7 +45,7 @@ const model = reactive({
         type: 'string',
         default: null,
         placeholder: '用户名',
-        prefix: 'i-ep-user',
+        prefix: 'user',
         rules: [
           {
             required: true,
@@ -55,7 +57,7 @@ const model = reactive({
         type: 'string',
         default: null,
         placeholder: '密码',
-        prefix: 'i-ep-lock',
+        prefix: 'lock',
         inputType: 'password',
         showPassword: true,
         rules: [
@@ -76,8 +78,14 @@ const model = reactive({
 const formRef = ref(null);
 const router = useRouter();
 const route = useRoute();
-const callback = (result) => {
+const userStore = useUserStore();
+const callback = async (result) => {
   console.log(result);
+  const { token } = result;
+  await userStore.login(token);
+  const response = await request.post('user/info');
+  const data = response.data?.code ? response.data.data : response.data;
+  userStore.setUserInfo(data);
   router.push({
     path: route.query.redirect ?? '/',
   });
