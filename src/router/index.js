@@ -19,6 +19,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
+  console.debug(`router.beforeEach:${from.path}->${to.path}`);
   NProgress.start();
   try {
     const userStore = useUserStore();
@@ -36,17 +37,15 @@ router.beforeEach(async (to, from, next) => {
   } catch (error) {
     NProgress.done();
   }
-  console.log(`router.beforeEach:${from.path}->${to.path}`);
 });
 
 router.afterEach((to, from) => {
+  console.debug(`router.afterEach:${from.path}->${to.path}`);
   NProgress.done();
-  console.log(`router.afterEach:${from.path}->${to.path}`);
   useTitle().value = to.meta?.title;
   const appStore = useAppStore();
   const routerStore = useRouterStore();
-  routerStore.excludes = [];
-  if (to.path.startsWith('/admin/')) {
+  if (to.fullPath.startsWith('/admin/')) {
     if (appStore.isUseTabsRouter) {
       routerStore.add(to);
     } else {

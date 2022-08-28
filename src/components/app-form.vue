@@ -8,12 +8,25 @@
     :label-suffix="model.labelSufix"
   >
     <slot name="header">
-      <h2 v-if="model.schema.title" class="text-center">{{ model.schema.title }}</h2>
+      <h2
+        v-if="model.schema.title"
+        class="text-center"
+      >
+        {{ model.schema.title }}
+      </h2>
     </slot>
-    <form-item v-model="model.data" :schema="model.schema" />
+    <form-item
+      v-model="model.data"
+      :schema="model.schema"
+    />
     <slot name="footer">
       <el-form-item>
-        <el-button :disabled="disabled" type="primary" @click="submit">提交</el-button>
+        <el-button
+          :disabled="disabled"
+          type="primary"
+          @click="submit"
+          >提交</el-button
+        >
         <el-button @click="reset">重置</el-button>
       </el-form-item>
     </slot>

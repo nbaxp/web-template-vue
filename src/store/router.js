@@ -5,7 +5,6 @@ export default defineStore('router', {
     return {
       isRefreshing: false,
       routes: [],
-      excludes: [],
     };
   },
   actions: {

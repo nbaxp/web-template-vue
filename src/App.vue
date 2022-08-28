@@ -1,8 +1,15 @@
 <template>
-  <van-config-provider v-if="isMobile()" :theme="appStore.isDark ? 'dark' : 'light'" :size="appStore.size">
+  <van-config-provider
+    v-if="isMobile()"
+    :theme="appStore.isDark ? 'dark' : 'light'"
+    :size="appStore.size"
+  >
     <router-view />
   </van-config-provider>
-  <el-config-provider v-else :locale="zhCn">
+  <el-config-provider
+    v-else
+    :locale="zhCn"
+  >
     <router-view />
   </el-config-provider>
 </template>

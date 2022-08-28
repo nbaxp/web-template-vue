@@ -1,5 +1,11 @@
 <template>
-  <el-tabs v-model="model" type="border-card" class="router-tab" @tab-remove="remove" @tab-click="onClick">
+  <el-tabs
+    v-model="model"
+    type="border-card"
+    class="router-tab w-full sticky top-0"
+    @tab-remove="remove"
+    @tab-click="onClick"
+  >
     <el-tab-pane
       v-for="(item, index) in routerStore.routes"
       :key="item.fullPath"
@@ -15,16 +21,25 @@
           @visible-change="showContextMenu(index, $event)"
         >
           <span class="inline-flex items-center">
-            <svg-icon v-if="item.meta.icon" :name="item.meta.icon" />
+            <svg-icon
+              v-if="item.meta.icon"
+              :name="item.meta.icon"
+            />
             {{ item.meta?.title ?? item.fullPath }}
           </span>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item @click="refresh(index)"><i-ep-refresh />刷新</el-dropdown-item>
-              <el-dropdown-item :disabled="index === 0" @click="removeLeft(index)">
+              <el-dropdown-item
+                :disabled="index === 0"
+                @click="removeLeft(index)"
+              >
                 <i-ep-back />关闭左侧
               </el-dropdown-item>
-              <el-dropdown-item :disabled="index === routerStore.routes.length - 1" @click="removeRight(index)">
+              <el-dropdown-item
+                :disabled="index === routerStore.routes.length - 1"
+                @click="removeRight(index)"
+              >
                 <i-ep-right />关闭右侧
               </el-dropdown-item>
               <el-dropdown-item
@@ -76,18 +91,14 @@ const showContextMenu = (index, show) => {
 
 const refresh = (index) => {
   const currentIndex = routerStore.routes.findIndex((o) => o.fullPath === currentRoute.fullPath);
+  const route = routerStore.routes[index];
   if (index !== currentIndex) {
-    const route = routerStore.routes[index];
-    if (route.meta.cached) {
-      routerStore.excludes = [route.fullPath];
-    }
     router.push({ path: route.fullPath });
-  } else {
-    routerStore.isRefreshing = true;
-    nextTick(() => {
-      routerStore.isRefreshing = false;
-    });
   }
+  routerStore.isRefreshing = true;
+  nextTick(() => {
+    routerStore.isRefreshing = false;
+  });
 };
 
 const remove = (name) => {
@@ -132,8 +143,7 @@ const removeOthers = (index) => {
 
 const onClick = (context) => {
   if (!context.active) {
-    const route = routerStore.routes.find((o) => o.fullPath === context.props.name);
-    router.push(route);
+    router.push(context.props.name);
   }
 };
 </script>

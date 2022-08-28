@@ -20,7 +20,6 @@ body {
 #app .el-header {
   position: fixed;
   width: 100%;
-  padding: 0;
   background-color: var(--el-menu-bg-color);
   border-bottom: solid 1px var(--el-menu-border-color);
 }
@@ -33,12 +32,27 @@ body {
   min-height: 100%;
 }
 
+.router-tab {
+  box-sizing: border-box;
+  height: 40px;
+  background-color: var(--el-fill-color-blank);
+  border-width: 0 !important;
+}
+
+.router-tab .el-tabs__item {
+  border-bottom-width: 0;
+}
+
 .router-tab .el-tabs__content {
   display: none;
 }
 
 .el-main {
   min-height: calc(100% - 60px);
+}
+
+.el-main.tabs {
+  min-height: calc(100% - 60px - 41px);
 }
 
 .el-footer {
@@ -73,11 +87,16 @@ body {
   height: 100%;
 }
 
-.aside .logo {
-  box-sizing: border-box;
-  margin-left: 20px;
+.aside.collapse .logo {
+  min-width: 43px;
 }
 
-.aside.collapse .logo {
-  width: 43px;
+.logo img {
+  height: 32px;
+}
+
+h1 {
+  color: var(--el-color-primary);
+  font-size: 18px;
+  line-height: 1.5em;
 }

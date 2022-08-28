@@ -1,14 +1,21 @@
 <template>
   <template v-for="route in items">
     <template v-if="!route.meta?.hide">
-      <el-sub-menu v-if="showSubMenu(route)" :key="path + '/' + route.path" :index="path + '/' + route.path">
+      <el-sub-menu
+        v-if="showSubMenu(route)"
+        :key="path + '/' + route.path"
+        :index="path + '/' + route.path"
+      >
         <template #title>
           <template v-if="route.meta?.icon">
             <svg-icon :name="route.meta.icon" />
           </template>
           <span style="margin-right: 25px">{{ route.meta?.title ?? route.path }}</span>
         </template>
-        <menu-item :path="path + '/' + route.path" :items="route.children" />
+        <menu-item
+          :path="path + '/' + route.path"
+          :items="route.children"
+        />
       </el-sub-menu>
       <el-menu-item
         v-else-if="showMenuItem(route)"

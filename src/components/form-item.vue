@@ -1,13 +1,26 @@
 <template>
-  <template v-for="(value, key) in schema.properties" :key="key">
+  <template
+    v-for="(value, key) in schema.properties"
+    :key="key"
+  >
     <template v-if="!value.skip">
       <template v-if="value.type === 'object'">
-        <el-form-item :label="value.title" :rules="value.rules">
-          <form-item v-model="model[key]" :schema="schema.properties[key]" :prefix="key" />
+        <el-form-item
+          :label="value.title"
+          :rules="value.rules"
+        >
+          <form-item
+            v-model="model[key]"
+            :schema="schema.properties[key]"
+            :prefix="key"
+          />
         </el-form-item>
       </template>
       <template v-else-if="value.type === 'array' && value.items.type === 'object'">
-        <el-form-item :label="value.title" :rules="value.rules">
+        <el-form-item
+          :label="value.title"
+          :rules="value.rules"
+        >
           <el-icon
             v-if="!model[key].length"
             class="cursor-pointer mx-2"
@@ -16,22 +29,37 @@
             <i-ep-plus />
           </el-icon>
         </el-form-item>
-        <template v-for="(item, index) in model[key]" :key="item">
+        <template
+          v-for="(item, index) in model[key]"
+          :key="item"
+        >
           <el-form-item>
             <form-item
               v-model="model[key][index]"
               :schema="schema.properties[key].items"
               :prefix="key + '[' + index + ']'"
             />
-            <el-icon class="cursor-pointer mx-2" @click="addItem(model[key], value.items.properties)">
+            <el-icon
+              class="cursor-pointer mx-2"
+              @click="addItem(model[key], value.items.properties)"
+            >
               <i-ep-plus />
             </el-icon>
-            <el-icon class="cursor-pointer mx-2" @click="removeItem(model[key], index)"><i-ep-minus /></el-icon>
+            <el-icon
+              class="cursor-pointer mx-2"
+              @click="removeItem(model[key], index)"
+              ><i-ep-minus
+            /></el-icon>
           </el-form-item>
         </template>
       </template>
       <template v-else>
-        <el-form-item :prop="prefix ? prefix + '.' + key : key" :label="value.title" :rules="value.rules" :title="key">
+        <el-form-item
+          :prop="prefix ? prefix + '.' + key : key"
+          :label="value.title"
+          :rules="value.rules"
+          :title="key"
+        >
           <el-input
             v-model="model[key]"
             :type="value.inputType ?? 'text'"
@@ -39,11 +67,23 @@
             :disabled="value.disabled"
             :show-password="value.showPassword"
           >
-            <template v-if="value.prefix" #prefix>
-              <svg-icon class="el-input__icon" :name="value.prefix" />
+            <template
+              v-if="value.prefix"
+              #prefix
+            >
+              <svg-icon
+                class="el-input__icon"
+                :name="value.prefix"
+              />
             </template>
-            <template v-if="value.suffix" #suffix>
-              <svg-icon class="el-input__icon" :name="value.suffix" />
+            <template
+              v-if="value.suffix"
+              #suffix
+            >
+              <svg-icon
+                class="el-input__icon"
+                :name="value.suffix"
+              />
             </template>
           </el-input>
         </el-form-item>

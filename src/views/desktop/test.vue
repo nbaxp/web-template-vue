@@ -1,9 +1,16 @@
 <template>
   <div class="center">
-    <app-form ref="formRef" v-model="model">
+    <app-form
+      ref="formRef"
+      v-model="model"
+    >
       <template #footer>
         <el-form-item>
-          <el-button type="primary" @click="submit">submit</el-button>
+          <el-button
+            type="primary"
+            @click="submit"
+            >submit</el-button
+          >
         </el-form-item>
       </template>
     </app-form>

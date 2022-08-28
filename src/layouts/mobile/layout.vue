@@ -2,8 +2,17 @@
   <div class="container">
     <router-view />
   </div>
-  <van-tabbar v-model="model.current" route>
-    <van-tabbar-item v-for="item in model.items" :key="item.to" :name="item.name" :to="item.to" :icon="item.icon">
+  <van-tabbar
+    v-model="model.current"
+    route
+  >
+    <van-tabbar-item
+      v-for="item in model.items"
+      :key="item.to"
+      :name="item.name"
+      :to="item.to"
+      :icon="item.icon"
+    >
       {{ item.label }}
     </van-tabbar-item>
   </van-tabbar>

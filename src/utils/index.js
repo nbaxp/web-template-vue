@@ -1,4 +1,5 @@
-/* eslint-disable import/prefer-default-export */
+import cloneDeep from 'lodash-es/cloneDeep';
+
 function isMobile() {
   return navigator.userAgent.toLowerCase().match(/mobile/i);
 }
@@ -22,53 +23,13 @@ function schemaToModel(properties) {
   return entity;
 }
 
-function toJSON(obj) {
-  return JSON.stringify(obj, (_key, value) => {
-    if (typeof value === 'function') {
-      return `/*()*/${value}/*()*/`;
-    }
-    return value;
-  });
+async function importText(input) {
+  const dataUri = `data:text/javascript;charset=utf-8,${encodeURIComponent(input)}`;
+  const result = await import(dataUri);
+  return result.default;
 }
 
-async function fromJSON(str) {
-  const dataUri = `data:text/javascript;charset=utf-8,${encodeURIComponent(
-    str.replaceAll("/**/'", '').replaceAll("'/**/", ''),
-  )}`;
-  const obj = await import(dataUri);
-  return obj;
-  // return JSON.parse(str, (_key, value) => {
-  //   if (value.startsWith('/*()*/')) {
-  //     return new Function(value);
-  //   }
-  //   return value;
-  // });
-}
-const obj = {
-  // eslint-disable-next-line object-shorthand
-  fun1: function () {
-    alert(1);
-  },
-  // fun2() {
-  //   alert(1);
-  // },
-  // fun3: () => {
-  //   alert(1);
-  // },
-  // eslint-disable-next-line object-shorthand
-  fun4: async function () {
-    alert(1);
-  },
-  // async fun5() {
-  //   alert(1);
-  // },
-  // fun6: async () => {
-  //   alert(1);
-  // },
-};
-// const json = toJSON(obj);
-// const source = await fromJSON('{fun1:function(){alert(1);}}');
+// const data = await importFileObject('export default {a(){alert(1);}}');
+// data.a();
 
-// console.log(source);
-
-export { fromJSON, isMobile, schemaToModel, sleep, toJSON };
+export { cloneDeep, importText, isMobile, schemaToModel, sleep };

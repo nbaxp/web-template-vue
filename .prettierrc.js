@@ -17,4 +17,5 @@ module.exports = {
   htmlWhitespaceSensitivity: 'css',
   vueIndentScriptAndStyle: false,
   endOfLine: 'lf',
+  singleAttributePerLine: true,
 };

@@ -5,6 +5,6 @@
 <script setup>
 const route = useRoute();
 onMounted(() => {
-  console.log(route.fullPath);
+  console.log(`onMounted:${route.fullPath}`);
 });
 </script>

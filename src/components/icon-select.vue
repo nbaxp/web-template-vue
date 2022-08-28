@@ -1,12 +1,25 @@
 <template>
-  <el-select v-model="model" filterable clearable @change="onChange">
-    <template v-if="model" #prefix>
+  <el-select
+    v-model="model"
+    filterable
+    clearable
+    @change="onChange"
+  >
+    <template
+      v-if="model"
+      #prefix
+    >
       <svg-icon :name="model" />
     </template>
-    <el-option v-for="(item, index) in icons" :key="item" :label="item" :value="item">
+    <el-option
+      v-for="(item, index) in icons"
+      :key="item"
+      :label="item"
+      :value="item"
+    >
       <div class="inline-flex items-center">
-        <svg-icon class="el-input__icon mr-2" :name="icons[index]" />
-        <span class="el-input__inner">{{ item }}</span>
+        <svg-icon :name="icons[index]" />
+        <span class="el-input__inner"> {{ item }} </span>
       </div>
     </el-option>
   </el-select>

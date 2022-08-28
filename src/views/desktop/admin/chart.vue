@@ -3,7 +3,8 @@
 </template>
 
 <script setup>
+const route = useRoute();
 onMounted(() => {
-  console.log('onMounted:chart');
+  console.log(`onMounted:${route.fullPath}`);
 });
 </script>

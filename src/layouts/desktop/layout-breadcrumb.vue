@@ -1,9 +1,15 @@
 <template>
-  <el-breadcrumb>
-    <el-breadcrumb-item v-for="item in $route.matched" :key="item.path">
+  <el-breadcrumb class="mb-3">
+    <el-breadcrumb-item
+      v-for="item in $route.matched"
+      :key="item.path"
+    >
       <router-link :to="item.path">
         <div class="center">
-          <svg-icon v-if="item.meta?.icon" :name="item.meta.icon" />
+          <svg-icon
+            v-if="item.meta?.icon"
+            :name="item.meta.icon"
+          />
           <span>{{ item.meta?.title }}</span>
         </div>
       </router-link>

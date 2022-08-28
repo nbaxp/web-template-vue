@@ -1,25 +1,50 @@
 <template>
   <div class="center">
     <div style="width: 320px">
-      <app-form ref="formRef" v-model="model" class="text-center" @callback="callback">
+      <app-form
+        ref="formRef"
+        v-model="model"
+        class="text-center"
+        @callback="callback"
+      >
         <template #header>
           <header-logo class="m-4" />
         </template>
         <template #footer>
           <el-form-item>
             <div class="between w-full">
-              <el-checkbox v-model="model.data.rememberMe" label="记住密码" size="large" />
+              <el-checkbox
+                v-model="model.data.rememberMe"
+                label="记住密码"
+                size="large"
+              />
               <router-link to="/forgot-password">
-                <el-button type="primary" link>忘记密码</el-button>
+                <el-button
+                  type="primary"
+                  link
+                  >忘记密码</el-button
+                >
               </router-link>
             </div>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" class="w-full" @click="formRef.submit()">登录</el-button>
+            <el-button
+              type="primary"
+              class="w-full"
+              @click="formRef.submit()"
+              >登录</el-button
+            >
           </el-form-item>
           <el-form-item>
-            <router-link to="/register" class="w-full text-center">
-              <el-button type="primary" link>注册账号</el-button>
+            <router-link
+              to="/register"
+              class="w-full text-center"
+            >
+              <el-button
+                type="primary"
+                link
+                >注册账号</el-button
+              >
             </router-link>
           </el-form-item>
         </template>
