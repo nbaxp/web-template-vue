@@ -25,7 +25,7 @@ function schemaToModel(properties) {
 
 async function importText(input) {
   const dataUri = `data:text/javascript;charset=utf-8,${encodeURIComponent(input)}`;
-  const result = await import(dataUri);
+  const result = await import(dataUri /* @vite-ignore */);
   return result.default;
 }
 

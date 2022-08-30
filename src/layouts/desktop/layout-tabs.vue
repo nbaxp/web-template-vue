@@ -2,7 +2,7 @@
   <el-tabs
     v-model="model"
     type="border-card"
-    class="router-tab w-full sticky top-0"
+    class="router-tab w-full"
     @tab-remove="remove"
     @tab-click="onClick"
   >

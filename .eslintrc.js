@@ -34,6 +34,7 @@ module.exports = {
     'import/no-unresolved': 'off',
     'import/extensions': 'off',
     'func-names': 'off',
+    'prefer-regex-literals': 'off',
     'no-console': 'off',
     'no-alert': 'off',
     'no-return-assign': 'off',

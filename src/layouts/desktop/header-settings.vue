@@ -92,6 +92,24 @@
     >
       <el-switch v-model="appStore.menuCollapse" />
     </el-form-item>
+    <el-form-item
+      prop="appStore.loglevel"
+      label="日志级别"
+    >
+      <el-select v-model="appStore.loglevel">
+        <template
+          v-for="item in logOptions"
+          :key="item.value"
+        >
+          <el-option
+            :value="item.value"
+            :label="item.text"
+          >
+            <span>{{ item.text }}</span>
+          </el-option>
+        </template>
+      </el-select>
+    </el-form-item>
     <el-form-item>
       <el-button @click="resetForm">恢复默认</el-button>
       <el-button
@@ -130,6 +148,14 @@ const sizeOptions = [
 const localeOptions = [
   { text: '中文', value: 'zh' },
   { text: 'English', value: 'en' },
+];
+
+const logOptions = [
+  { text: 'trace', value: 'trace' },
+  { text: 'debug', value: 'debug' },
+  { text: 'info', value: 'info' },
+  { text: 'warn', value: 'warn' },
+  { text: 'error', value: 'error' },
 ];
 
 const formRef = ref(null);

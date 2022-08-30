@@ -7,5 +7,6 @@
   "locale": "zh",
   "showBreadcrumb": true,
   "isUseTabsRouter": true,
-  "menuCollapse": false
+  "menuCollapse": false,
+  "loglevel": "info"
 }

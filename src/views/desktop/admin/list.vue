@@ -1,56 +1,87 @@
 <template>
-  <el-card>
-    <el-table
-      :data="tableData"
-      style="width: 100%"
-    >
-      <el-table-column
-        prop="date"
-        label="Date"
-        width="180"
-      />
-      <el-table-column
-        prop="name"
-        label="Name"
-        width="180"
-      />
-      <el-table-column
-        prop="address"
-        label="Address"
-      />
-    </el-table>
-  </el-card>
+  <app-list
+    ref="listRef"
+    v-model="model"
+  >
+  </app-list>
 </template>
 
 <script setup>
-const route = useRoute();
-onMounted(() => {
-  console.log(`onMounted:${route.fullPath}`);
-});
-onActivated(() => {
-  console.log(`onActivated:${route.fullPath}`);
+import AppList from '~/components/app-list.vue';
+
+const ws = new WebSocket('ws://localhost/ws');
+ws.addEventListener('open', () => {
+  console.log('websocket open');
+  ws.send('hello');
 });
 
-const tableData = [
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
+ws.addEventListener('close', () => {
+  console.log('websocket close');
+});
+
+ws.addEventListener('error', () => {
+  console.log('websocket error');
+});
+
+ws.addEventListener('message', (event) => {
+  console.log('Received：', event.data);
+});
+//
+const listRef = ref(null);
+
+const model = {
+  action: 'list?a=b',
+  method: 'get',
+  inline: true,
+  disableValidation: true,
+  data: null,
+  schema: {
+    properties: {
+      test1: {
+        type: 'string',
+        title: '字符串',
+        rules: [
+          {
+            required: true,
+          },
+        ],
+      },
+    },
   },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
+  tableData: [],
+  tableSchema: {
+    properties: {
+      id: {
+        type: 'string',
+        input: 'hidden',
+      },
+      name: {
+        type: 'string',
+        title: '姓名',
+      },
+      email: {
+        type: 'string',
+        title: '邮箱',
+      },
+      emailConfirmed: {
+        type: 'boolean',
+        title: '邮箱已确认',
+      },
+      avatar: {
+        type: 'string',
+        title: '头像',
+        input: 'image',
+      },
+      birthday: {
+        type: 'string',
+        title: '生日',
+        input: 'date',
+      },
+      rowVersion: {
+        type: 'string',
+        input: 'hidden',
+      },
+    },
   },
-  {
-    date: '2016-05-04',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-];
+};
 </script>

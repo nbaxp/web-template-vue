@@ -86,7 +86,7 @@
       <el-icon
         :size="18"
         class="cursor-pointer"
-        @click="setting.toggle"
+        @click="setting.toggle()"
       >
         <i-ep-setting />
       </el-icon>
@@ -124,7 +124,7 @@ defineProps({
 const setting = reactive({
   show: false,
   toggle() {
-    setting.show = !setting.show;
+    this.show = !this.show;
   },
 });
 

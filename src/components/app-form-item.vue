@@ -9,10 +9,11 @@
           :label="value.title"
           :rules="value.rules"
         >
-          <form-item
+          <app-form-item
             v-model="model[key]"
             :schema="schema.properties[key]"
             :prefix="key"
+            :validate="validate"
           />
         </el-form-item>
       </template>
@@ -34,10 +35,11 @@
           :key="item"
         >
           <el-form-item>
-            <form-item
+            <app-form-item
               v-model="model[key][index]"
               :schema="schema.properties[key].items"
               :prefix="key + '[' + index + ']'"
+              :validate="validate"
             />
             <el-icon
               class="cursor-pointer mx-2"
@@ -57,7 +59,7 @@
         <el-form-item
           :prop="prefix ? prefix + '.' + key : key"
           :label="value.title"
-          :rules="value.rules"
+          :rules="validate ? value.rules : null"
           :title="key"
         >
           <el-input
@@ -108,10 +110,14 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  validate: {
+    type: Boolean,
+    default: true,
+  },
 });
 const model = reactive(props.modelValue);
 const schema = reactive(props.schema);
-const emit = defineEmits(['update:modelValue', 'update:schema', 'callback']);
+const emit = defineEmits(['update:modelValue', 'update:schema']);
 watch(model, (value) => {
   emit('update:modelValue', value);
 });

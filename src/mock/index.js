@@ -1,7 +1,8 @@
 import Mock from 'better-mock';
 
-import useTest from './test';
+import useList from './list';
 import useUser from './user';
+import useWebSocket from './web-socket';
 
 export default function useMock() {
   // const debug = process.env.NODE_ENV !== 'production';
@@ -18,6 +19,7 @@ export default function useMock() {
     timeout: '200-600',
   });
 
-  useTest();
   useUser();
+  useList();
+  useWebSocket();
 }

@@ -73,6 +73,15 @@ const routes = [
         },
       },
       {
+        path: 'form',
+        component: view('admin/form'),
+        meta: {
+          title: '表单页',
+          icon: 'page',
+          cached: true,
+        },
+      },
+      {
         path: 'list',
         component: view('admin/list'),
         meta: {

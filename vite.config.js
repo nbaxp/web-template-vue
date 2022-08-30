@@ -14,7 +14,6 @@ import svgLoader from 'vite-svg-loader';
 
 const autoImportOptions = {
   imports: ['vue', 'vue-router', 'pinia', '@vueuse/core'],
-  // dirs: ['src/components'],
   vueTemplate: true,
   eslintrc: {
     enabled: true,
@@ -25,7 +24,7 @@ const componentoptions = {
   resolvers: [
     IconsResolver({
       enabledCollections: ['ep'],
-    }), //
+    }),
     ElementPlusResolver(),
     VantResolver(),
   ],

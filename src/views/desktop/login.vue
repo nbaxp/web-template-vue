@@ -5,7 +5,7 @@
         ref="formRef"
         v-model="model"
         class="text-center"
-        @callback="callback"
+        @after="after"
       >
         <template #header>
           <header-logo class="m-4" />
@@ -104,7 +104,7 @@ const formRef = ref(null);
 const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
-const callback = async (result) => {
+const after = async (result) => {
   console.log(result);
   const { token } = result;
   await userStore.login(token);
@@ -115,7 +115,4 @@ const callback = async (result) => {
     path: route.query.redirect ?? '/',
   });
 };
-watch(model, (value) => {
-  console.log(value);
-});
 </script>

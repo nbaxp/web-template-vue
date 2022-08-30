@@ -33,11 +33,14 @@
               <component
                 :is="Component"
                 v-if="!appStore.isUseTabsRouter || !route.meta?.cached"
+                :key="route.fullPath"
               />
               <keep-alive>
                 <component
                   :is="Component"
                   v-if="appStore.isUseTabsRouter && route.meta?.cached"
+                  :key="route.fullPath"
+                  :class="{ useTabs: appStore.isUseTabsRouter, cached: route.meta?.cached }"
                 />
               </keep-alive>
             </router-view>

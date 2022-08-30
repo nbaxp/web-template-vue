@@ -6,6 +6,7 @@
     :model="model.data"
     label-width="auto"
     :label-suffix="model.labelSufix"
+    :disabled="model.disabled"
   >
     <slot name="header">
       <h2
@@ -15,9 +16,10 @@
         {{ model.schema.title }}
       </h2>
     </slot>
-    <form-item
+    <app-form-item
       v-model="model.data"
       :schema="model.schema"
+      :validate="!model.disableValidation"
     />
     <slot name="footer">
       <el-form-item>
@@ -33,8 +35,8 @@
   </el-form>
 </template>
 <script setup>
-import FormItem from '~/components/form-item.vue';
-import { schemaToModel } from '~/utils';
+import AppFormItem from '~/components/app-form-item.vue';
+import { cloneDeep, schemaToModel } from '~/utils';
 import request from '~/utils/request';
 
 const props = defineProps({
@@ -44,15 +46,15 @@ const props = defineProps({
   },
 });
 const model = reactive(props.modelValue);
-const emit = defineEmits(['update:modelValue', 'callback']);
+const emit = defineEmits(['update:modelValue', 'before', 'after']);
 watch(model, (value) => {
   emit('update:modelValue', value);
 });
 //
 if (!model.data) {
   model.data = schemaToModel(model.schema.properties);
-  console.log('根据 schema 生成 model：');
-  console.log(JSON.stringify(model.data, null, 2));
+  console.debug('根据 schema 生成 model：');
+  console.debug(JSON.stringify(model.data, null, 2));
 }
 const formRef = ref(null);
 const loading = ref(false);
@@ -75,7 +77,10 @@ const submit = async () => {
         url,
         method,
       };
-      const { data } = model;
+      const data = cloneDeep(model.data);
+      emit('before', (val) => {
+        Object.assign(data, val);
+      });
       if (method === 'get') {
         config.params = data;
       } else if (method === 'post') {
@@ -83,7 +88,7 @@ const submit = async () => {
       }
       const response = await request.request(config);
       const result = response.data?.data ?? response.data;
-      emit('callback', result);
+      emit('after', result);
     }
   } catch (error) {
     console.error('error', error);

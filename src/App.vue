@@ -16,11 +16,17 @@
 
 <script setup>
 import zhCn from 'element-plus/lib/locale/lang/zh-cn';
+import log from 'loglevel';
 
 import { useAppStore } from './store';
 import { isMobile } from './utils';
 
 const appStore = useAppStore();
+
+watchEffect(() => {
+  log.setLevel(appStore.loglevel);
+  log.info('set log level');
+});
 
 const isDark = useMediaQuery('(prefers-color-scheme: dark)');
 
