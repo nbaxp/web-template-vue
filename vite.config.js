@@ -35,7 +35,7 @@ const unocssOptions = {
 };
 
 export default defineConfig({
-  base: '/',
+  base: '/web-template-vue/',
   build: {
     target: 'esnext', // top await
     module: 'esm',

@@ -19,20 +19,24 @@
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
       "prettier --write",
-      "eslint --fix"
+      "eslint --fix",
+      "git add ."
     ],
     "*.vue": [
       "stylelint --fix",
       "prettier --write",
-      "eslint --fix"
+      "eslint --fix",
+      "git add ."
     ],
     "*.{css,less,scss}": [
       "stylelint --fix",
-      "prettier --write"
+      "prettier --write",
+      "git add ."
     ],
     "*.md": [
       "markdownlint --fix",
-      "prettier --write"
+      "prettier --write",
+      "git add ."
     ]
   },
   "dependencies": {
