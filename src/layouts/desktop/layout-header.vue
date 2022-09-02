@@ -38,58 +38,80 @@
       </el-menu>
     </div>
     <div class="between">
-      <template v-if="userStore.token">
-        <el-dropdown class="cursor-pointer">
-          <el-space>
-            <el-icon :size="18"
-              ><img
-                :src="userStore.avatar"
-                class="h-full"
-            /></el-icon>
-            <span>{{ userStore.name }}</span>
-            <el-icon><i-ep-arrow-down /></el-icon>
-          </el-space>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item>
-                <el-icon><i-ep-user /></el-icon>个人中心
-              </el-dropdown-item>
-              <el-dropdown-item
-                divided
-                @click="confirmLogout"
+      <el-space>
+        <template v-if="userStore.token">
+          <el-dropdown class="cursor-pointer">
+            <el-space>
+              <el-icon :size="18"
+                ><img
+                  :src="userStore.avatar"
+                  class="h-full"
+              /></el-icon>
+              <span>{{ userStore.name }}</span>
+              <el-icon><i-ep-arrow-down /></el-icon>
+            </el-space>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item>
+                  <el-icon><i-ep-user /></el-icon>个人中心
+                </el-dropdown-item>
+                <el-dropdown-item
+                  divided
+                  @click="confirmLogout"
+                >
+                  <el-icon><i-ep-switch-button /></el-icon>退出登录
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+          <el-dropdown
+            v-if="appStore.roleSwitchable && userStore.currentRole"
+            class="cursor-pointer"
+            @command="onRoleChange"
+          >
+            <el-space>
+              <span>{{ userStore.roles.find((o) => o.value === userStore.currentRole)?.name }}</span>
+              <el-icon><i-ep-arrow-down /></el-icon>
+            </el-space>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                  v-for="item in userStore.roles"
+                  :key="item.value"
+                  :command="item.value"
+                  >{{ item.name }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </template>
+        <template v-else>
+          <el-space :size="20">
+            <el-link type="info">
+              <router-link
+                class="router-link"
+                :to="{ path: '/login', query: { redirect: $route.fullPath } }"
               >
-                <el-icon><i-ep-switch-button /></el-icon>退出登录
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown></template
-      >
-      <template v-else>
-        <el-space :size="20">
-          <el-link type="info">
-            <router-link
-              class="router-link"
-              :to="{ path: '/login', query: { redirect: $route.fullPath } }"
-            >
-              登录
-            </router-link>
-          </el-link>
-          <el-link type="info">
-            <router-link
-              class="router-link"
-              to="/register"
-              >注册</router-link
-            >
-          </el-link>
-        </el-space>
-      </template>
-      <el-icon
-        :size="18"
-        class="cursor-pointer"
-        @click="setting.toggle()"
-      >
-        <i-ep-setting />
-      </el-icon>
+                登录
+              </router-link>
+            </el-link>
+            <el-link type="info">
+              <router-link
+                class="router-link"
+                to="/register"
+                >注册</router-link
+              >
+            </el-link>
+          </el-space>
+        </template>
+        <el-icon
+          :size="18"
+          class="cursor-pointer"
+          @click="setting.toggle()"
+        >
+          <i-ep-setting />
+        </el-icon>
+      </el-space>
     </div>
   </div>
   <el-drawer
@@ -129,11 +151,18 @@ const setting = reactive({
 });
 
 const appStore = useAppStore();
-const toggleMenu = () => (appStore.menuCollapse = !appStore.menuCollapse);
-
 const userStore = useUserStore();
-
+const currentRoute = useRoute();
 const router = useRouter();
+
+const toggleMenu = () => (appStore.menuCollapse = !appStore.menuCollapse);
+const onRoleChange = (command) => {
+  userStore.currentRole = command;
+  if (currentRoute.meta?.requiresAuth && !userStore.hasPermission(currentRoute.meta?.permission)) {
+    router.push('/403');
+  }
+};
+
 const confirmLogout = async () => {
   try {
     await ElMessageBox.confirm('确认退出？', '提示', { type: 'warning' });

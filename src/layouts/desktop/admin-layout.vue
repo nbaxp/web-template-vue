@@ -12,8 +12,8 @@
             router
           >
             <menu-item
-              :path="$route.matched[0].path"
-              :items="$route.matched[0].children"
+              :path="path"
+              :items="items"
             />
           </el-menu>
         </el-scrollbar>
@@ -68,6 +68,8 @@ const appStore = useAppStore();
 const routerStore = useRouterStore();
 
 const isRefreshing = computed(() => routerStore.isRefreshing);
+const path = computed(() => useRoute().matched[0].path);
+const items = computed(() => useRoute().matched[0].children);
 </script>
 
 <style scoped>

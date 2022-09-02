@@ -26,7 +26,7 @@ router.beforeEach(async (to, from, next) => {
     if (to.path !== '/login' && to.meta?.requiresAuth) {
       if (!userStore.token) {
         next({ path: '/login', query: { redirect: to.fullPath } });
-      } else if (to.meta?.role && userStore.isInRole(to.meta?.role)) {
+      } else if (to.meta?.permission && !userStore.hasPermission(to.meta?.permission)) {
         next({ path: '/403', query: { redirect: to.fullPath } });
       } else {
         next();

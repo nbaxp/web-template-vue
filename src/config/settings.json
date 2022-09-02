@@ -8,5 +8,6 @@
   "showBreadcrumb": true,
   "isUseTabsRouter": true,
   "menuCollapse": false,
+  "roleSwitchable": true,
   "loglevel": "info"
 }

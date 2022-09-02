@@ -64,7 +64,31 @@ export default function useMock() {
         .then((result) => {
           const { payload } = result;
           if (payload.user === 'admin') {
-            data.roles = ['admin'];
+            data.roles = [
+              {
+                name: '用户',
+                value: 'user',
+                isDefault: true,
+              },
+              {
+                name: '管理员',
+                value: 'admin',
+                permissions: [
+                  {
+                    name: '用户管理',
+                    value: '/admin/user/home',
+                  },
+                  {
+                    name: '角色管理',
+                    value: '/admin/user/role',
+                  },
+                  {
+                    name: '权限管理',
+                    value: '/admin/user/permission',
+                  },
+                ],
+              },
+            ];
           }
           resolve({
             code,

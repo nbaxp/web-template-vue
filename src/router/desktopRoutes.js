@@ -55,17 +55,38 @@ const routes = [
     },
   },
   {
+    path: '/account',
+    component: layout('admin-layout'),
+    redirect: '/account/info',
+    meta: {
+      title: '个人中心',
+      icon: 'user',
+      hide: true,
+    },
+    children: [
+      {
+        path: 'home',
+        component: view('account/info'),
+        meta: {
+          title: '个人信息',
+          icon: 'page',
+          requiresAuth: true,
+        },
+      },
+    ],
+  },
+  {
     path: '/admin',
     component: layout('admin-layout'),
-    redirect: '/admin/home',
+    redirect: '/admin/dashboard',
     meta: {
       title: '后台',
       icon: 'administator',
     },
     children: [
       {
-        path: 'home',
-        component: view('admin/home'),
+        path: 'dashboard',
+        component: view('admin/dashboard'),
         meta: {
           title: '仪表盘',
           icon: 'page',
@@ -112,6 +133,8 @@ const routes = [
             meta: {
               title: '用户管理',
               icon: 'user',
+              requiresAuth: true,
+              permission: '/admin/user/home',
             },
           },
           {
@@ -120,6 +143,8 @@ const routes = [
             meta: {
               title: '角色管理',
               icon: 'role',
+              requiresAuth: true,
+              permission: '/admin/user/role',
             },
           },
           {
@@ -128,6 +153,8 @@ const routes = [
             meta: {
               title: '权限管理',
               icon: 'permission',
+              requiresAuth: true,
+              permission: '/admin/user/role',
             },
           },
         ],

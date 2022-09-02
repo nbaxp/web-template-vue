@@ -6,53 +6,57 @@
     @tab-remove="remove"
     @tab-click="onClick"
   >
-    <el-tab-pane
+    <template
       v-for="(item, index) in routerStore.routes"
       :key="item.fullPath"
-      v-model="item.fullPath"
-      :name="item.fullPath"
-      :closable="routerStore.routes.length > 1"
     >
-      <template #label>
-        <el-dropdown
-          :ref="(el) => setRef(index, el)"
-          class="h-full"
-          trigger="contextmenu"
-          @visible-change="showContextMenu(index, $event)"
-        >
-          <span class="inline-flex items-center">
-            <svg-icon
-              v-if="item.meta.icon"
-              :name="item.meta.icon"
-            />
-            {{ item.meta?.title ?? item.fullPath }}
-          </span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item @click="refresh(index)"><i-ep-refresh />刷新</el-dropdown-item>
-              <el-dropdown-item
-                :disabled="index === 0"
-                @click="removeLeft(index)"
-              >
-                <i-ep-back />关闭左侧
-              </el-dropdown-item>
-              <el-dropdown-item
-                :disabled="index === routerStore.routes.length - 1"
-                @click="removeRight(index)"
-              >
-                <i-ep-right />关闭右侧
-              </el-dropdown-item>
-              <el-dropdown-item
-                :disabled="index === 0 && index === routerStore.routes.length - 1"
-                @click="removeOthers(index)"
-              >
-                <i-ep-switch />关闭其他
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-      </template>
-    </el-tab-pane>
+      <el-tab-pane
+        v-if="!item.meta.requiresAuth || userStore.hasPermission(item.meta?.permission)"
+        v-model="item.fullPath"
+        :name="item.fullPath"
+        :closable="routerStore.routes.length > 1"
+      >
+        <template #label>
+          <el-dropdown
+            :ref="(el) => setRef(index, el)"
+            class="h-full"
+            trigger="contextmenu"
+            @visible-change="showContextMenu(index, $event)"
+          >
+            <span class="inline-flex items-center">
+              <svg-icon
+                v-if="item.meta.icon"
+                :name="item.meta.icon"
+              />
+              {{ item.meta?.title ?? item.fullPath }}
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click="refresh(index)"><i-ep-refresh />刷新</el-dropdown-item>
+                <el-dropdown-item
+                  :disabled="index === 0"
+                  @click="removeLeft(index)"
+                >
+                  <i-ep-back />关闭左侧
+                </el-dropdown-item>
+                <el-dropdown-item
+                  :disabled="index === routerStore.routes.length - 1"
+                  @click="removeRight(index)"
+                >
+                  <i-ep-right />关闭右侧
+                </el-dropdown-item>
+                <el-dropdown-item
+                  :disabled="index === 0 && index === routerStore.routes.length - 1"
+                  @click="removeOthers(index)"
+                >
+                  <i-ep-switch />关闭其他
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </template>
+      </el-tab-pane>
+    </template>
   </el-tabs>
 </template>
 <script setup>
@@ -60,10 +64,11 @@ import { nextTick } from 'vue';
 import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 
 import SvgIcon from '~/components/svg-icon.vue';
-import { useRouterStore } from '~/store';
+import { useRouterStore, useUserStore } from '~/store';
 
 const itemRefs = ref([]);
 const routerStore = useRouterStore();
+const userStore = useUserStore();
 const currentRoute = useRoute();
 const router = useRouter();
 const model = ref(currentRoute.fullPath);

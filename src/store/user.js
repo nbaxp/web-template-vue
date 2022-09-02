@@ -1,4 +1,7 @@
+import Enumerable from 'linq';
 import { defineStore } from 'pinia';
+
+import { useAppStore } from '~/store';
 
 export default defineStore('user', {
   state: () => {
@@ -7,6 +10,7 @@ export default defineStore('user', {
       name: '昵称',
       avatar: './logo.svg',
       roles: [],
+      currentRole: null,
     };
   },
   actions: {
@@ -21,9 +25,37 @@ export default defineStore('user', {
     },
     setUserInfo(data) {
       this.$patch(data);
+      if (this.roles.length) {
+        this.currentRole = (
+          Enumerable.from(this.roles).firstOrDefault((o) => o.isDefault) ??
+          Enumerable.from(this.roles)
+            .orderBy((o) => o.value)
+            .first()
+        ).value;
+      }
     },
-    isInRole(role) {
-      return this.roles.includes(role);
+    getPermissions() {
+      const appStore = useAppStore();
+      if (appStore.roleSwitchable) {
+        return this.roles.find((o) => o.value === this.currentRole)?.permissions ?? [];
+      }
+      return this.roles
+        .map((o) => o.permissions)
+        .filter((o) => o)
+        .flat();
+    },
+    hasPermission(permission) {
+      if (!permission) {
+        return true;
+      }
+      const appStore = useAppStore();
+      if (appStore.roleSwitchable) {
+        return this.roles.find((o) => o.value === this.currentRole)?.permissions?.some((o) => o.value === permission);
+      }
+      return this.roles
+        .map((o) => o.permissions)
+        .flat()
+        .some((o) => o?.value === permission);
     },
   },
 });

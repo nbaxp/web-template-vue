@@ -93,6 +93,12 @@
       <el-switch v-model="appStore.menuCollapse" />
     </el-form-item>
     <el-form-item
+      prop="appStore.roleSwitchable"
+      label="角色切换"
+    >
+      <el-switch v-model="appStore.roleSwitchable" />
+    </el-form-item>
+    <el-form-item
       prop="appStore.loglevel"
       label="日志级别"
     >
