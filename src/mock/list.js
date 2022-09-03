@@ -8,16 +8,21 @@ export default function useTest() {
     const { pageIndex = 1, pageSize = 10 } = query;
     return new Promise((resolve) => {
       const code = 200;
+      const total = 250;
+      const count = pageIndex * pageSize < total ? pageSize : pageIndex * pageSize - total;
       const items = [];
-      for (let i = 0; i < pageSize; i += 1) {
+      for (let i = 0; i < count; i += 1) {
         items.push(
           Mock.mock({
             id: Mock.Random.guid(),
+            userName: Mock.Random.first(),
             name: Mock.Random.cname(),
             email: Mock.Random.email(),
             emailConfirmed: Mock.Random.boolean(),
             avatar: Mock.Random.dataImage(),
             birthday: Mock.Random.date(),
+            createdAt: Mock.Random.datetime(),
+            modifiedAt: Mock.Random.datetime(),
             rowVersion: Mock.Random.guid(),
           }),
         );

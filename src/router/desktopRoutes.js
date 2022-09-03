@@ -121,20 +121,20 @@ const routes = [
       },
       {
         path: 'user',
-        redirect: '/admin/user/home',
+        redirect: '/admin/user/user',
         meta: {
           title: '用户中心',
           icon: 'group',
         },
         children: [
           {
-            path: 'home',
-            component: view('admin/user/home'),
+            path: 'user',
+            component: view('admin/user/user'),
             meta: {
               title: '用户管理',
               icon: 'user',
               requiresAuth: true,
-              permission: '/admin/user/home',
+              permission: '/admin/user',
             },
           },
           {
@@ -144,7 +144,7 @@ const routes = [
               title: '角色管理',
               icon: 'role',
               requiresAuth: true,
-              permission: '/admin/user/role',
+              permission: '/admin/role',
             },
           },
           {
@@ -154,7 +154,7 @@ const routes = [
               title: '权限管理',
               icon: 'permission',
               requiresAuth: true,
-              permission: '/admin/user/role',
+              permission: '/admin/permission',
             },
           },
         ],

@@ -5,32 +5,22 @@
   "editor.formatOnType": false,
   "files.autoSave": "onFocusChange",
   "eslint.alwaysShowStatus": true,
-  "eslint.probe": [
-    "javascript", //
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
-    "vue",
-    "jsx"
-  ],
+  "eslint.probe": ["javascript", "javascriptreact", "typescript", "typescriptreact", "json", "vue", "jsx"],
   "css.validate": false,
   "less.validate": false,
   "scss.validate": false,
-  "stylelint.validate": [
-    "css", //
-    "less",
-    "sass",
-    "postcss",
-    "vue"
-  ],
+  "stylelint.validate": ["css", "less", "sass", "postcss", "vue"],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true,
     "source.fixAll.stylelint": true
   },
   "[html]": {
-    "editor.defaultFormatter": "vscode.html-language-features"
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
   },
   "[javascript]": {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+  },
+  "[json]": {
     "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
   },
   "[css]": {
@@ -44,5 +34,6 @@
   },
   "[vue]": {
     "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
-  }
+  },
+  "prettier.printWidth": 120
 }

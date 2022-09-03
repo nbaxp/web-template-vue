@@ -76,15 +76,45 @@ export default function useMock() {
                 permissions: [
                   {
                     name: '用户管理',
-                    value: '/admin/user/home',
+                    value: '/admin/user',
+                    type: 'page',
+                    method: 'get',
+                    children: [
+                      {
+                        name: '新建',
+                        type: 'button',
+                        method: 'post',
+                        rows: 0,
+                      },
+                      {
+                        name: '查看',
+                        type: 'button',
+                        method: 'get',
+                        rows: 1,
+                      },
+                      {
+                        name: '编辑',
+                        type: 'button',
+                        method: 'put',
+                        rows: 1,
+                      },
+                      {
+                        name: '删除',
+                        type: 'button',
+                        method: 'delete',
+                        rows: 2,
+                      },
+                    ],
                   },
                   {
                     name: '角色管理',
-                    value: '/admin/user/role',
+                    value: '/admin/role',
+                    type: 'page',
                   },
                   {
                     name: '权限管理',
-                    value: '/admin/user/permission',
+                    value: '/admin/permission',
+                    type: 'page',
                   },
                 ],
               },

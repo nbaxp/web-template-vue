@@ -69,6 +69,11 @@ body {
   height: 100%;
 }
 
+.el-table .el-table-fixed-column--left .cell,
+.el-table .el-table-fixed-column--right .cell {
+  white-space: nowrap;
+}
+
 .router-link {
   color: var(--el-text-color-primary);
 }

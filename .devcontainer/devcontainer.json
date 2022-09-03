@@ -17,9 +17,6 @@
       ]
     }
   },
-  "forwardPorts": [
-    4173,
-    5173
-  ],
+  "forwardPorts": [4173, 5173],
   "remoteUser": "node"
 }

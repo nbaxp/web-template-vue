@@ -1,4 +1,3 @@
-import Enumerable from 'linq';
 import { defineStore } from 'pinia';
 
 import { useAppStore } from '~/store';
@@ -26,23 +25,25 @@ export default defineStore('user', {
     setUserInfo(data) {
       this.$patch(data);
       if (this.roles.length) {
-        this.currentRole = (
-          Enumerable.from(this.roles).firstOrDefault((o) => o.isDefault) ??
-          Enumerable.from(this.roles)
-            .orderBy((o) => o.value)
-            .first()
-        ).value;
+        this.currentRole = this.roles.find((o) => o.isDefault || !o.isDefault).value;
       }
     },
-    getPermissions() {
+    getButtonPermissions() {
+      const currentRoute = useRoute();
       const appStore = useAppStore();
       if (appStore.roleSwitchable) {
-        return this.roles.find((o) => o.value === this.currentRole)?.permissions ?? [];
+        return (
+          this.roles
+            .find((o) => o.value === this.currentRole)
+            ?.permissions?.find((o) => o.value === currentRoute.meta?.permission)?.children ?? []
+        );
       }
-      return this.roles
-        .map((o) => o.permissions)
-        .filter((o) => o)
-        .flat();
+      return (
+        this.roles
+          .map((o) => o.permissions)
+          .flat()
+          .find((o) => o?.value === currentRoute.meta?.permission)?.children ?? []
+      );
     },
     hasPermission(permission) {
       if (!permission) {

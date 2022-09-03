@@ -27,8 +27,9 @@
           :disabled="disabled"
           type="primary"
           @click="submit"
-          >提交</el-button
         >
+          提交
+        </el-button>
         <el-button @click="reset">重置</el-button>
       </el-form-item>
     </slot>

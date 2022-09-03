@@ -13,7 +13,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .js,.jsx,.vue && stylelint \"**/*.{css,scss,html,vue}\" && markdownlint \"**/*.md\"",
-    "lint:fix": "eslint . --fix --ext .js,.jsx,.vue && stylelint  \"**/*.{css,scss,html,vue}\" --fix && markdownlint \"**/*.md\" --fix && prettier --write .",
+    "lint:fix": "eslint --fix --ext .js,.jsx,.vue && stylelint  \"**/*.{css,scss,html,vue}\" --fix && markdownlint \"**/*.md\" --fix && prettier --write .",
+    "lint-staged": "npx lint-staged",
     "prepare": "husky install"
   },
   "lint-staged": {
