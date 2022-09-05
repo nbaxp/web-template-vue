@@ -15,7 +15,8 @@
     "lint": "eslint . --ext .js,.jsx,.vue && stylelint \"**/*.{css,scss,html,vue}\" && markdownlint \"**/*.md\"",
     "lint:fix": "eslint --fix --ext .js,.jsx,.vue && stylelint  \"**/*.{css,scss,html,vue}\" --fix && markdownlint \"**/*.md\" --fix && prettier --write .",
     "lint-staged": "npx lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "patch-package"
   },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
@@ -85,6 +86,7 @@
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "markdownlint-cli": "^0.32.2",
+    "patch-package": "^6.4.7",
     "prettier": "^2.7.1",
     "sass": "^1.54.8",
     "stylelint": "^14.11.0",

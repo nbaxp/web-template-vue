@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia';
 
 import { useAppStore } from '~/store';
+import request from '~/utils/request';
 
 export default defineStore('user', {
   state: () => {
     return {
-      token: null,
+      token: localStorage.getItem('token'),
       name: '昵称',
       avatar: './logo.svg',
       roles: [],
@@ -13,19 +14,26 @@ export default defineStore('user', {
     };
   },
   actions: {
-    init() {
+    async init() {
       console.log('user store init');
+      if (this.token) {
+        await this.setUserInfo();
+      }
     },
     async login(token) {
       this.token = token;
+      localStorage.setItem('token', token);
     },
     logout() {
       this.token = null;
+      localStorage.removeItem('token');
     },
-    setUserInfo(data) {
+    async setUserInfo() {
+      const response = await request.post('user/info');
+      const data = response.data.data ?? response.data;
       this.$patch(data);
       if (this.roles.length) {
-        this.currentRole = this.roles.find((o) => o.isDefault || !o.isDefault).value;
+        this.currentRole = (this.roles.find((o) => o.isDefault) ?? this.roles[0]).value;
       }
     },
     getButtonPermissions() {

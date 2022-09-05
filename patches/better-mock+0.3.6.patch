@@ -1,0 +1,31 @@
+diff --git a/node_modules/better-mock/dist/mock.browser.esm.js b/node_modules/better-mock/dist/mock.browser.esm.js
+index 5a3faea..441e586 100644
+--- a/node_modules/better-mock/dist/mock.browser.esm.js
++++ b/node_modules/better-mock/dist/mock.browser.esm.js
+@@ -8581,9 +8581,11 @@ var MockXMLHttpRequest = /** @class */ (function () {
+                         this.dispatchEvent(createCustomEvent('readystatechange'));
+                         this.readyState = XHR_STATES.LOADING;
+                         this.dispatchEvent(createCustomEvent('readystatechange'));
+-                        this.status = 200;
++                        const result  =mocked.convert(this.custom.template, this.custom.options);
++                        this.status = result._status ?? 200;
++                        delete result._status
+                         this.statusText = 'OK';
+-                        return [4 /*yield*/, mocked.convert(this.custom.template, this.custom.options)];
++                        return [4 /*yield*/, result];
+                     case 1:
+                         mockResponse = _a.sent();
+                         this.response = this.responseText = JSON.stringify(mockResponse);
+@@ -8778,9 +8780,11 @@ function MockFetch(input, init) {
+                     return [4 /*yield*/, mocked.convert(item, options)];
+                 case 1:
+                     result = _a.sent();
++                    const status = result._status ?? 200;
++                    delete result._status;
+                     body = JSON.stringify(result);
+                     response = new Response(body, {
+-                        status: 200,
++                        status,
+                         statusText: 'ok',
+                         headers: request.headers
+                     });

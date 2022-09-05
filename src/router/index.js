@@ -4,6 +4,7 @@ import { useTitle } from '@vueuse/core';
 import NProgress from 'nprogress';
 import { createRouter, createWebHashHistory } from 'vue-router';
 
+import log from '~/log';
 import { useAppStore, useRouterStore, useUserStore } from '~/store';
 
 import desktopRoutes from './desktopRoutes';
@@ -19,7 +20,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  console.debug(`router.beforeEach:${from.path}->${to.path}`);
+  log.debug(`router.beforeEach:${from.path}->${to.path}`);
   NProgress.start();
   try {
     const userStore = useUserStore();
@@ -40,7 +41,7 @@ router.beforeEach(async (to, from, next) => {
 });
 
 router.afterEach((to, from) => {
-  console.debug(`router.afterEach:${from.path}->${to.path}`);
+  log.debug(`router.afterEach:${from.path}->${to.path}`);
   NProgress.done();
   useTitle().value = to.meta?.title;
   const appStore = useAppStore();

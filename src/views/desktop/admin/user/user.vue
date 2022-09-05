@@ -29,17 +29,66 @@ ws.addEventListener('message', (event) => {
 //
 const listRef = ref(null);
 
-const model = {
-  action: 'list?a=b',
+const schema = {
+  properties: {
+    id: {
+      type: 'string',
+      input: 'hidden',
+    },
+    userName: {
+      type: 'string',
+      title: '用户名',
+    },
+    name: {
+      type: 'string',
+      title: '姓名',
+    },
+    email: {
+      type: 'string',
+      title: '邮箱',
+    },
+    emailConfirmed: {
+      type: 'boolean',
+      title: '邮箱已确认',
+    },
+    avatar: {
+      type: 'string',
+      title: '头像',
+      input: 'image',
+    },
+    birthday: {
+      type: 'string',
+      title: '生日',
+      input: 'date',
+    },
+    createdAt: {
+      type: 'string',
+      title: '创建时间',
+      input: 'datetime',
+    },
+    modifiedAt: {
+      type: 'string',
+      title: '修改时间',
+      input: 'datetime',
+    },
+    rowVersion: {
+      type: 'string',
+      input: 'hidden',
+    },
+  },
+};
+
+const queryModel = {
+  action: 'user',
   method: 'get',
   inline: true,
   disableValidation: true,
   data: null,
   schema: {
     properties: {
-      test1: {
+      userName: {
         type: 'string',
-        title: '字符串',
+        title: '用户名',
         rules: [
           {
             required: true,
@@ -48,54 +97,30 @@ const model = {
       },
     },
   },
-  tableData: [],
-  tableSchema: {
-    properties: {
-      id: {
-        type: 'string',
-        input: 'hidden',
-      },
-      userName: {
-        type: 'string',
-        title: '用户名',
-      },
-      name: {
-        type: 'string',
-        title: '姓名',
-      },
-      email: {
-        type: 'string',
-        title: '邮箱',
-      },
-      emailConfirmed: {
-        type: 'boolean',
-        title: '邮箱已确认',
-      },
-      avatar: {
-        type: 'string',
-        title: '头像',
-        input: 'image',
-      },
-      birthday: {
-        type: 'string',
-        title: '生日',
-        input: 'date',
-      },
-      createdAt: {
-        type: 'string',
-        title: '创建时间',
-        input: 'datetime',
-      },
-      modifiedAt: {
-        type: 'string',
-        title: '修改时间',
-        input: 'datetime',
-      },
-      rowVersion: {
-        type: 'string',
-        input: 'hidden',
-      },
-    },
-  },
 };
+const listModel = {
+  data: [],
+  schema,
+};
+const detailModel = {
+  disabled: true,
+  data: null,
+  schema,
+};
+const createModel = {
+  data: {},
+  schema,
+};
+const updateModel = {
+  data: {},
+  schema,
+};
+
+const model = reactive({
+  queryModel,
+  listModel,
+  detailModel,
+  createModel,
+  updateModel,
+});
 </script>

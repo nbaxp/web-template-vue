@@ -7,7 +7,7 @@
   <template v-else>
     <el-config-provider
       :size="size"
-      :auto-insert-space="autoInsertSpace"
+      :button="{ autoInsertSpace: true }"
       :locale="zhCn"
     >
       <router-view />
@@ -17,21 +17,14 @@
 
 <script setup>
 import zhCn from 'element-plus/lib/locale/lang/zh-cn';
-import log from 'loglevel';
 
 import { useAppStore } from './store';
 import { isMobile } from './utils';
 
 const appStore = useAppStore();
 
-const autoInsertSpace = ref(true);
 const size = computed(() => appStore.size);
 const isDark = computed(() => appStore.isDark);
-
-watchEffect(() => {
-  log.setLevel(appStore.loglevel);
-  log.info('set log level');
-});
 
 watchEffect(() => {
   const darkClass = 'dark';

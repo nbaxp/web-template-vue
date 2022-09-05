@@ -14,6 +14,7 @@
             :schema="schema.properties[key]"
             :prefix="key"
             :validate="validate"
+            :disabled="disabled"
           />
         </el-form-item>
       </template>
@@ -50,8 +51,9 @@
             <el-icon
               class="cursor-pointer mx-2"
               @click="removeItem(model[key], index)"
-              ><i-ep-minus
-            /></el-icon>
+            >
+              <i-ep-minus />
+            </el-icon>
           </el-form-item>
         </template>
       </template>
@@ -62,39 +64,19 @@
           :rules="validate ? value.rules : null"
           :title="key"
         >
-          <el-input
-            v-model="model[key]"
-            :type="value.inputType ?? 'text'"
-            :placeholder="value.placeholder ?? value.title ?? key"
-            :disabled="value.disabled"
-            :show-password="value.showPassword"
-          >
-            <template
-              v-if="value.prefix"
-              #prefix
-            >
-              <svg-icon
-                class="el-input__icon"
-                :name="value.prefix"
-              />
-            </template>
-            <template
-              v-if="value.suffix"
-              #suffix
-            >
-              <svg-icon
-                class="el-input__icon"
-                :name="value.suffix"
-              />
-            </template>
-          </el-input>
+          <app-form-input
+            :prop="key"
+            :model="model"
+            :schema="value"
+            :disabled="disabled || value.disabled"
+          />
         </el-form-item>
       </template>
     </template>
   </template>
 </template>
 <script setup>
-import SvgIcon from '~/components/svg-icon.vue';
+import AppFormInput from '~/components/app-form-input.vue';
 import { schemaToModel } from '~/utils';
 
 const props = defineProps({
@@ -113,6 +95,10 @@ const props = defineProps({
   validate: {
     type: Boolean,
     default: true,
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 });
 const model = reactive(props.modelValue);

@@ -132,6 +132,7 @@ import 'element-plus/es/components/message/style/css';
 
 import { ElMessage } from 'element-plus';
 
+import log from '~/log';
 import { useAppStore } from '~/store';
 import Moon from '~icons/ep/moon';
 import Platform from '~icons/ep/platform';
@@ -163,6 +164,12 @@ const logOptions = [
   { text: 'warn', value: 'warn' },
   { text: 'error', value: 'error' },
 ];
+
+watch(appStore, (val) => {
+  if (appStore.loglevel !== val) {
+    log.setLevel(appStore.loglevel);
+  }
+});
 
 const formRef = ref(null);
 const resetForm = () => {

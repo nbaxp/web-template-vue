@@ -1,6 +1,6 @@
 <template>
   <div class="center">
-    <div style="width: 320px">
+    <div style="width: 320px; margin-top: -160px">
       <app-form
         ref="formRef"
         v-model="model"
@@ -57,7 +57,6 @@
 import AppForm from '~/components/app-form.vue';
 import HeaderLogo from '~/layouts/desktop/header-logo.vue';
 import { useUserStore } from '~/store';
-import request from '~/utils/request';
 
 const model = reactive({
   action: 'user/login',
@@ -108,9 +107,7 @@ const after = async (result) => {
   console.log(result);
   const { token } = result;
   await userStore.login(token);
-  const response = await request.post('user/info');
-  const data = response.data?.code ? response.data.data : response.data;
-  userStore.setUserInfo(data);
+  await userStore.setUserInfo();
   router.push({
     path: route.query.redirect ?? '/',
   });

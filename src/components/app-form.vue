@@ -2,11 +2,11 @@
   <el-form
     ref="formRef"
     v-loading="loading"
+    element-loading-background="rgba(0, 0, 0, 0)"
     :inline="model.inline"
     :model="model.data"
     label-width="auto"
     :label-suffix="model.labelSufix"
-    :disabled="model.disabled"
   >
     <slot name="header">
       <h2
@@ -19,6 +19,7 @@
     <app-form-item
       v-model="model.data"
       :schema="model.schema"
+      :disabled="model.disabled"
       :validate="!model.disableValidation"
     />
     <slot name="footer">
@@ -37,6 +38,7 @@
 </template>
 <script setup>
 import AppFormItem from '~/components/app-form-item.vue';
+import log from '~/log';
 import { cloneDeep, schemaToModel } from '~/utils';
 import request from '~/utils/request';
 
@@ -54,8 +56,8 @@ watch(model, (value) => {
 //
 if (!model.data) {
   model.data = schemaToModel(model.schema.properties);
-  console.debug('根据 schema 生成 model：');
-  console.debug(JSON.stringify(model.data, null, 2));
+  log.debug('根据 schema 生成 model：');
+  log.debug(JSON.stringify(model.data, null, 2));
 }
 const formRef = ref(null);
 const loading = ref(false);

@@ -5,6 +5,7 @@ import './styles/index.css';
 
 import App from './app.vue';
 import useLocale from './locale';
+import { useLog } from './log';
 import useMock from './mock';
 import router from './router';
 import store, { useAppStore, useUserStore } from './store';
@@ -12,8 +13,9 @@ import store, { useAppStore, useUserStore } from './store';
 useMock();
 const app = createApp(App);
 app.use(store);
+useLog();
 useAppStore().init();
-useUserStore().init();
+await useUserStore().init();
 app.use(useLocale());
 app.use(router);
 app.mount('#app');
