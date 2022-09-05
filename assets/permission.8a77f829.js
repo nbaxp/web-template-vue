@@ -1,1 +1,0 @@
-import{l as t,m as n,a3 as s,g as a,o as r}from"./index.b2875c3e.js";const p={__name:"permission",setup(l){const o=a();return t(()=>{console.log(`onMounted:${o.fullPath}`)}),(e,u)=>(r(),n("h1",null,s(e.$route.path),1))}};export{p as default};

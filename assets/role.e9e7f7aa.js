@@ -1,1 +1,0 @@
-import{l as t,m as a,a3 as n,g as s,o as l}from"./index.b2875c3e.js";const p={__name:"role",setup(r){const o=s();return t(()=>{console.log(`onMounted:${o.fullPath}`)}),(e,u)=>(l(),a("h1",null,n(e.$route.path),1))}};export{p as default};
