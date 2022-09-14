@@ -1,6 +1,7 @@
 import Mock from 'better-mock';
 
 import useAccount from './auth';
+import useLazy from './lazy';
 import useList from './list';
 import usePermission from './permission';
 import useRole from './role';
@@ -23,6 +24,7 @@ export default function useMock() {
     timeout: '200-600',
   });
 
+  useLazy();
   useUpload();
   useAccount();
   usePermission();

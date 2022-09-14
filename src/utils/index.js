@@ -1,4 +1,5 @@
 import cloneDeep from 'lodash-es/cloneDeep';
+import { lookup, mimes } from 'mrmime';
 
 function isMobile() {
   return navigator.userAgent.toLowerCase().match(/mobile/i);
@@ -8,6 +9,14 @@ function sleep(time) {
   return new Promise((resolve) => {
     setTimeout(resolve, time * 1000);
   });
+}
+
+function extensionToMimetype(extension) {
+  return lookup(extension);
+}
+
+function mimetypeToExension(mimetype) {
+  return mimes[mimetype];
 }
 
 async function importModule(input) {
@@ -63,4 +72,14 @@ function findPath(tree, value, path = null, key = 'value', children = 'children'
   return path;
 }
 
-export { cloneDeep, findPath, importFunction, importModule, isMobile, schemaToModel, sleep };
+export {
+  cloneDeep,
+  extensionToMimetype,
+  findPath,
+  importFunction,
+  importModule,
+  isMobile,
+  mimetypeToExension,
+  schemaToModel,
+  sleep,
+};

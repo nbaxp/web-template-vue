@@ -240,7 +240,8 @@
       <template #tip>
         <div class="el-upload__tip">
           <div>
-            最大上传数量：{{ limit }}<template v-if="schema.accept">，文件类型限制：{{ schema.accept }}</template>
+            单个文件大小限制：{{ formatBytes(size) }}，上传数量限制：{{ limit
+            }}<template v-if="schema.accept">，上传文件类型：{{ schema.accept }}</template>
           </div>
         </div>
       </template>
@@ -330,7 +331,8 @@
 import { ElMessage } from 'element-plus';
 
 import SvgIcon from '~/components/svg-icon.vue';
-import { findPath, importFunction } from '~/utils';
+import request from '~/request';
+import { extensionToMimetype, findPath, importFunction, mimetypeToExension } from '~/utils';
 
 const props = defineProps({
   prop: {
@@ -382,6 +384,23 @@ const getSelectDisplay = () => {
 const getMultipleSelectDisplay = () => {
   return selectOptions.value.filter((o) => model[props.prop].find((i) => i === o.value)).map((o) => o.label);
 };
+if (props.schema.url) {
+  if (props.schema.parent) {
+    watchEffect(async () => {
+      const parentValue = model[props.schema.parent];
+      if (parentValue) {
+        const response = await request.get(`${props.schema.url}?parent=${parentValue}`);
+        selectOptions.value = response.data.data ?? response.data;
+        if (model[props.prop] && !selectOptions.value.some((o) => o.value === model[props.prop])) {
+          model[props.prop] = null;
+        }
+      } else {
+        selectOptions.value = [];
+        model[props.prop] = null;
+      }
+    });
+  }
+}
 // cascade
 const cascaderModel = ref([]);
 const getCascaderDisplay = () => {
@@ -457,6 +476,7 @@ const fileList = ref([]);
 const preivewImageVisable = ref(false);
 const previewImageUrl = ref(null);
 const limit = computed(() => (props.schema.multiple ? props.schema.limit ?? 5 : 1));
+const size = computed(() => props.schema.size ?? 1024 * 1024);
 if (model[props.prop]) {
   if (props.schema.multiple) {
     fileList.value = model[props.prop].map((o) => ({ name: props.prop, url: o }));
@@ -479,22 +499,31 @@ const onRemove = (file) => {
   upload.value.handleRemove(file);
   if (props.schema.multiple) {
     model[props.prop] = fileList.value.map((o) => o.url);
-    // fileList.value.splice(
-    //   fileList.value.findIndex((o) => o.url === file.url),
-    //   1,
-    // );
   } else {
     model[props.prop] = null;
   }
 };
+const formatBytes = (bytes, decimals = 2) => {
+  if (bytes === 0) {
+    return '0 Bytes';
+  }
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
+};
+const fileTypes = props.schema.accept?.split(',').map((o) => extensionToMimetype(o)) ?? [];
 const beforeUpload = (file) => {
-  // if (file.type !== 'image/jpeg') {
-  //   ElMessage.error('Avatar picture must be JPG format!')
-  //   return false
-  // } else if (rawFile.size / 1024 / 1024 > 2) {
-  //   ElMessage.error('Avatar picture size can not exceed 2MB!')
-  //   return false
-  // }
+  console.log(`file.type:${file.type}`);
+  if (props.schema.accept && !fileTypes.some((o) => o === file.type)) {
+    ElMessage.error(`当前文件类型 ${mimetypeToExension(file.type) ?? file.type}，可选文件类型 ${props.schema.accept}`);
+    return false;
+  }
+  if (file.size > size.value) {
+    ElMessage.error(`当前文件大小 ${formatBytes(file.size)}，已超过 ${formatBytes(size.value)}`);
+    return false;
+  }
   return true;
 };
 const onPreview = (file) => {
@@ -508,25 +537,16 @@ const onExceed = (files, uploadFiles) => {
     } 个文件`,
   );
 };
-const onUploadChange = (uploadFile, uploadFiles) => {
-  console.log(fileList.value);
-};
 const onUploadSuccess = (uploadFile, uploadFiles) => {
   console.log(fileList.value);
   fileList.value.find((o) => o.name === uploadFiles.name).url = uploadFile.data;
 };
-const uploadHttpRequest = (options) => {
-  // const { file } = options;
-  // const fileReader = new FileReader();
-  // if (file) {
-  //   fileReader.readAsDataURL(file);
-  // }
-  // fileReader.onload = function (e) {
-  //   model[props.prop] = e.target.result;
-  // };
-};
 //
 onMounted(async () => {
   disabledDate = await importFunction(props.schema.disabledDate ?? '()=>false');
+  if (props.schema.url && !props.schema.parent) {
+    const response = await request.get(props.schema.url);
+    selectOptions.value = response.data.data ?? response.data;
+  }
 });
 </script>
