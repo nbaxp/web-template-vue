@@ -116,6 +116,12 @@
         </template>
       </el-select>
     </el-form-item>
+    <el-form-item
+      prop="appStore.useHttpMethodOverride"
+      label="X-HTTP-Method-Override"
+    >
+      <el-switch v-model="appStore.useHttpMethodOverride" />
+    </el-form-item>
     <el-form-item>
       <el-button @click="resetForm">恢复默认</el-button>
       <el-button

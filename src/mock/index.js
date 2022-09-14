@@ -1,6 +1,10 @@
 import Mock from 'better-mock';
 
+import useAccount from './auth';
 import useList from './list';
+import usePermission from './permission';
+import useRole from './role';
+import useUpload from './upload';
 import useUser from './user';
 import useWebSocket from './web-socket';
 
@@ -19,6 +23,10 @@ export default function useMock() {
     timeout: '200-600',
   });
 
+  useUpload();
+  useAccount();
+  usePermission();
+  useRole();
   useUser();
   useList();
   useWebSocket();

@@ -1,15 +1,11 @@
 <template>
   <div class="w-full h-full overflow-auto">
-    <app-list
-      ref="listRef"
-      v-model="model"
-    >
-    </app-list>
+    <app-form v-model="model" />
   </div>
 </template>
 <script setup>
-import AppList from '~/components/app-list.vue';
-
+import AppForm from '~/components/app-form.vue';
+// ws
 const ws = new WebSocket('ws://localhost/ws');
 ws.addEventListener('open', () => {
   console.log('websocket open');
@@ -27,20 +23,14 @@ ws.addEventListener('error', () => {
 ws.addEventListener('message', (event) => {
   console.log('Received：', event.data);
 });
-//
-const listRef = ref(null);
 
 const model = {
-  action: 'list?a=b',
-  method: 'get',
-  inline: true,
-  disableValidation: true,
   data: null,
   schema: {
     properties: {
-      test1: {
+      stringProp: {
         type: 'string',
-        title: '字符串',
+        title: 'type[string]',
         rules: [
           {
             required: true,

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 
+import log from '~/log';
 import { useUserStore } from '~/store';
 
 const getErrorMessageByCode = (code) => {
@@ -32,6 +33,10 @@ const request = axios.create(globalConfig);
 
 request.interceptors.request.use(
   function (config) {
+    log.debug(`request:[${config.method}][${config.baseURL}${config.url}]`);
+    if (config.params ?? config.data) {
+      log.debug(JSON.parse(JSON.stringify(config.params ?? config.data)));
+    }
     const userStore = useUserStore();
     const { token } = userStore;
     if (token) {
@@ -56,6 +61,8 @@ request.interceptors.request.use(
 
 request.interceptors.response.use(
   function (response) {
+    const { config } = response;
+    log.debug(`response:[${response.status}][${config.method}][${config.baseURL}${config.url}]`);
     if (response.data) {
       const result = response.data;
       const successCode = 200; // or may be zero
@@ -69,7 +76,7 @@ request.interceptors.response.use(
   },
   function (error) {
     let message = null;
-    if (error.response.status) {
+    if (error.response?.status) {
       message = `status ${error.response.status} : ${getErrorMessageByCode(error.response.status)}`;
     } else {
       message = error.message;

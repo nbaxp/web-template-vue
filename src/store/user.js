@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
 
+import request from '~/request';
+import router from '~/router';
 import { useAppStore } from '~/store';
-import request from '~/utils/request';
 
 export default defineStore('user', {
   state: () => {
@@ -29,28 +30,33 @@ export default defineStore('user', {
       localStorage.removeItem('token');
     },
     async setUserInfo() {
-      const response = await request.post('user/info');
-      const data = response.data.data ?? response.data;
-      this.$patch(data);
-      if (this.roles.length) {
-        this.currentRole = (this.roles.find((o) => o.isDefault) ?? this.roles[0]).value;
+      try {
+        const response = await request.post('user/info');
+        const data = response.data.data ?? response.data;
+        this.$patch(data);
+        if (this.roles.length) {
+          this.currentRole = (this.roles.find((o) => o.isDefault) ?? this.roles[0]).number;
+        }
+      } catch (error) {
+        console.log(error);
+        this.logout();
+        router.push({ path: '/login', query: { redirect: router.currentRoute.value.fullPath } });
       }
     },
     getButtonPermissions() {
-      const currentRoute = useRoute();
       const appStore = useAppStore();
       if (appStore.roleSwitchable) {
         return (
           this.roles
-            .find((o) => o.value === this.currentRole)
-            ?.permissions?.find((o) => o.value === currentRoute.meta?.permission)?.children ?? []
+            .find((o) => o.number === this.currentRole)
+            ?.permissions?.find((o) => o.number === router.currentRoute.value.meta?.permission)?.children ?? []
         );
       }
       return (
         this.roles
           .map((o) => o.permissions)
           .flat()
-          .find((o) => o?.value === currentRoute.meta?.permission)?.children ?? []
+          .find((o) => o?.number === router.currentRoute.value.meta?.permission)?.children ?? []
       );
     },
     hasPermission(permission) {
@@ -59,12 +65,12 @@ export default defineStore('user', {
       }
       const appStore = useAppStore();
       if (appStore.roleSwitchable) {
-        return this.roles.find((o) => o.value === this.currentRole)?.permissions?.some((o) => o.value === permission);
+        return this.roles.find((o) => o.number === this.currentRole)?.permissions?.some((o) => o.number === permission);
       }
       return this.roles
         .map((o) => o.permissions)
         .flat()
-        .some((o) => o?.value === permission);
+        .some((o) => o?.number === permission);
     },
   },
 });

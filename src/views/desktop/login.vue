@@ -82,7 +82,7 @@ const model = reactive({
         default: null,
         placeholder: '密码',
         prefix: 'lock',
-        inputType: 'password',
+        input: 'password',
         showPassword: true,
         rules: [
           {

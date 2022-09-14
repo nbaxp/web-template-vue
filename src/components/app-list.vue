@@ -28,7 +28,7 @@
         >
         <template
           v-for="item in userStore.getButtonPermissions()"
-          :key="item.value"
+          :key="item.number"
         >
           <el-button
             v-if="item.rows === 0 || item.rows === 2"
@@ -51,6 +51,8 @@
             highlight-current-row
             table-layout="auto"
             :data="model.listModel.data"
+            :lazy="true"
+            :load="lazyLoad"
             @selection-change="onSelectionChange"
           >
             <el-table-column
@@ -59,6 +61,7 @@
               fixed="left"
             />
             <el-table-column
+              v-if="!model.listModel.disableRowIndex"
               label="序号"
               type="index"
               align="center"
@@ -78,7 +81,6 @@
                   :prop="key"
                   :label="item.title ?? key"
                   :sortable="item.sortable"
-                  show-overflow-tooltip
                 >
                   <template #default="scope">
                     <app-form-input
@@ -99,12 +101,12 @@
                 <template #default="{ row }"
                   ><template
                     v-for="item in userStore.getButtonPermissions()"
-                    :key="item.value"
+                    :key="item.number"
                   >
                     <el-button
                       v-if="item.rows === 1 || item.rows === 2"
                       type="primary"
-                      @click="onClick(item, [row])"
+                      @click.stop="onClick(item, [row])"
                       >{{ item.name }}</el-button
                     >
                   </template>
@@ -118,6 +120,7 @@
     <el-row class="mt-5">
       <el-col>
         <el-pagination
+          v-if="!model.listModel.disablePagination"
           v-model:currentPage="pageModel.pageIndex"
           v-model:page-size="pageModel.pageSize"
           class="justify-end"
@@ -134,10 +137,16 @@
     ref="dialogRef"
     v-model="dialogModel.visable"
     :title="dialogModel.title"
+    :close-on-click-modal="false"
+    :destroy-on-close="true"
+    :center="true"
   >
     <template v-if="command === 'detail'">
       <template v-if="model.detailModel.data">
-        <app-form v-model="model.detailModel">
+        <app-form
+          ref="detailFormRef"
+          v-model="model.detailModel"
+        >
           <template #footer>
             <el-form-item>
               <el-button
@@ -152,31 +161,31 @@
     </template>
     <template v-else-if="command === 'create'">
       <app-form
-        ref="editFormRef"
-        v-model="model"
-        @before="beforeQuery"
-        @after="afterQuery"
+        ref="createFormRef"
+        v-model="model.createModel"
+        @after="afterCreate"
       />
     </template>
     <template v-else-if="command === 'update'">
-      <app-form
-        ref="editFormRef"
-        v-model="model"
-        @before="beforeQuery"
-        @after="afterQuery"
-      />
+      <template v-if="model.updateModel.data">
+        <app-form
+          ref="updateFormRef"
+          v-model="model.updateModel"
+          @after="afterUpdate"
+        />
+      </template>
     </template>
   </el-dialog>
 </template>
 
 <script setup>
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { cloneDeep } from 'lodash';
 
 import AppFormInput from '~/components/app-form-input.vue';
 import log from '~/log';
+import request from '~/request';
 import { useUserStore } from '~/store';
-import request from '~/utils/request';
+import { cloneDeep } from '~/utils';
 
 const props = defineProps({
   modelValue: {
@@ -195,6 +204,8 @@ if (!model.detailModel.disabled) {
 //
 const userStore = useUserStore();
 const queryFormRef = ref(null);
+const createFormRef = ref(null);
+const updateFormRef = ref(null);
 const tableRef = ref(null);
 const selection = ref([]);
 const pageModel = reactive({
@@ -209,6 +220,16 @@ const dialogModel = reactive({
 
 const query = async () => {
   await queryFormRef.value.submit();
+};
+
+const lazyLoad = async (row, node, resolve) => {
+  if (row.children && row.children.length) {
+    resolve(row.children);
+  } else {
+    const parentId = row.id;
+    const data = await queryFormRef.value.load({ parentId });
+    resolve(data.items);
+  }
 };
 
 onMounted(async () => {
@@ -230,28 +251,126 @@ const onPageSizeChange = async () => {
 };
 
 const beforeQuery = (callback) => {
-  const pageData = {};
-  if (pageModel.pageIndex !== 1) {
-    pageData.pageIndex = pageModel.pageIndex;
+  if (!model.listModel.disablePage) {
+    const pageData = {};
+    if (pageModel.pageIndex !== 1) {
+      pageData.pageIndex = pageModel.pageIndex;
+    }
+    if (pageModel.pageSize !== 10) {
+      pageData.pageSize = pageModel.pageSize;
+    }
+    callback(pageData);
   }
-  if (pageModel.pageSize !== 10) {
-    pageData.pageSize = pageModel.pageSize;
-  }
-  callback(pageData);
 };
 
 const afterQuery = (data) => {
   model.listModel.data = data.items;
-  pageModel.total = data.total;
+  if (!model.listModel.disablePage) {
+    pageModel.total = data.total;
+  }
 };
 
 const onSelectionChange = (val) => {
   selection.value = val;
 };
 
+const closeDialog = () => {
+  dialogModel.visable = false;
+};
+
+const onDetail = async (permission, items) => {
+  const { id } = items[0];
+  const data = { id };
+  let url = model.queryModel.action;
+  if (permission.path) {
+    url = permission.path.startsWith('/') ? permission.path : `${model.queryModel.action}/${permission.path}`;
+  }
+  const method = permission.method ?? 'post';
+  const config = {
+    url,
+    method,
+  };
+  if (method === 'get') {
+    // config.params = data;
+    config.url = `${url}/${id}`;
+  } else {
+    config.data = data;
+  }
+  const response = await request.request(config);
+  const result = response.data.data ?? response.data;
+  model.detailModel.data = result ?? cloneDeep(items[0]);
+  // model.detailModel.action = permission.path ?? model.queryModel.action;
+  model.detailModel.method = permission.method ?? 'post';
+  model.detailModel.mode = 'detail';
+  dialogModel.title = permission.name;
+  dialogModel.visable = true;
+};
+
+const onCreate = async (permission) => {
+  model.createModel.data = null;
+  model.createModel.action = model.queryModel.action;
+  if (permission.path) {
+    model.createModel.action = permission.path.startsWith('/')
+      ? permission.path
+      : `${model.createModel.action}/${permission.path}`;
+  }
+  model.createModel.method = permission.method ?? 'post';
+  model.createModel.mode = 'create';
+  dialogModel.title = permission.name;
+  dialogModel.visable = true;
+};
+
+const afterCreate = async () => {
+  closeDialog();
+  await query();
+};
+
+const onUpdate = async (permission, items) => {
+  const { id } = items[0];
+  model.updateModel.action = model.queryModel.action;
+  if (permission.path) {
+    model.updateModel.action = permission.path.startsWith('/')
+      ? permission.path
+      : `${model.updateModel.action}/${permission.path}`;
+  }
+  model.updateModel.action = `${model.updateModel.action}/${id}`;
+  //
+  const data = { id };
+  let url = model.queryModel.action;
+  const queryPermission = userStore.getButtonPermissions().find((o) => o.command === 'detail');
+  if (queryPermission.path) {
+    url = queryPermission.path.startsWith('/')
+      ? queryPermission.path
+      : `${model.queryModel.action}/${queryPermission.path}`;
+  }
+  const method = queryPermission.method ?? 'post';
+  const config = {
+    url,
+    method,
+  };
+  if (method === 'get') {
+    // config.params = data;
+    config.url = `${url}/${id}`;
+  } else {
+    config.data = data;
+  }
+  const response = await request.request(config);
+  const result = response.data.data ?? response.data;
+  model.updateModel.data = result ?? cloneDeep(items[0]);
+  model.updateModel.method = permission.method ?? 'post';
+  model.updateModel.mode = 'update';
+  dialogModel.title = permission.name;
+  dialogModel.visable = true;
+};
+
+const afterUpdate = async () => {
+  closeDialog();
+  await query();
+};
+
 const onDelete = async (permission, items) => {
   try {
-    await ElMessageBox.confirm('确认删除选中的数据？', '警告', { type: 'warning' });
+    await ElMessageBox.confirm(`确认删除 ${items.length} 条数据？`, '警告', { type: 'warning' });
     let url = model.queryModel.action;
     if (permission.path) {
       url = permission.path.startsWith('/') ? permission.path : `${model.queryModel.action}/${permission.path}`;
@@ -279,58 +398,25 @@ const onDelete = async (permission, items) => {
   } catch (error) {
     console.log(error);
     ElMessage({
-      type: 'error·',
+      type: 'error',
       message: error,
     });
   }
 };
 
-const onDetail = async (permission, items) => {
-  const { id } = items[0];
-  const data = { id };
-  let url = model.queryModel.action;
-  if (permission.path) {
-    url = permission.path.startsWith('/') ? permission.path : `${model.queryModel.action}/${permission.path}`;
-  }
-  const method = permission.method ?? 'post';
-  const config = {
-    url,
-    method,
-  };
-  if (method === 'get') {
-    // config.params = data;
-    config.url = `${url}/${id}`;
-  } else {
-    config.data = data;
-  }
-  const response = await request.request(config);
-  const result = response.data.data ?? response.data;
-  model.detailModel.data = result ?? cloneDeep(items[0]);
-  dialogModel.title = permission.name;
-  dialogModel.visable = true;
-};
-
-const onCreate = async () => {};
-
-const onUpdate = async () => {};
-
 const command = ref(null);
 const onClick = async (permission, items) => {
-  command.value = permission.value;
-  if (permission.value === 'detail') {
+  command.value = permission.command;
+  if (permission.command === 'detail') {
     await onDetail(permission, items);
-  } else if (permission.value === 'create') {
+  } else if (permission.command === 'create') {
     await onCreate(permission, items);
-  } else if (permission.value === 'update') {
+  } else if (permission.command === 'update') {
     await onUpdate(permission, items);
-  } else if (permission.value === 'delete') {
+  } else if (permission.command === 'delete') {
     await onDelete(permission, items);
   } else {
     emit('command', permission, items);
   }
-};
-
-const closeDialog = () => {
-  dialogModel.visable = false;
 };
 </script>

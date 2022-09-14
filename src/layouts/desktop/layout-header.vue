@@ -48,18 +48,22 @@
                   class="h-full"
               /></el-icon>
               <span>{{ userStore.name }}</span>
-              <el-icon><i-ep-arrow-down /></el-icon>
+              <el-icon>
+                <i-ep-arrow-down />
+              </el-icon>
             </el-space>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item>
-                  <el-icon><i-ep-user /></el-icon>个人中心
+                  <router-link to="/account">
+                    <el-icon> <i-ep-user /> </el-icon>个人中心
+                  </router-link>
                 </el-dropdown-item>
                 <el-dropdown-item
                   divided
                   @click="confirmLogout"
                 >
-                  <el-icon><i-ep-switch-button /></el-icon>退出登录
+                  <el-icon> <i-ep-switch-button /> </el-icon>退出登录
                 </el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -70,15 +74,17 @@
             @command="onRoleChange"
           >
             <el-space>
-              <span>{{ userStore.roles.find((o) => o.value === userStore.currentRole)?.name }}</span>
-              <el-icon><i-ep-arrow-down /></el-icon>
+              <span>{{ userStore.roles.find((o) => o.number === userStore.currentRole)?.name }}</span>
+              <el-icon>
+                <i-ep-arrow-down />
+              </el-icon>
             </el-space>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item
                   v-for="item in userStore.roles"
-                  :key="item.value"
-                  :command="item.value"
+                  :key="item.number"
+                  :command="item.number"
                   >{{ item.name }}
                 </el-dropdown-item>
               </el-dropdown-menu>

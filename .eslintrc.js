@@ -39,7 +39,7 @@ module.exports = {
     'no-alert': 'off',
     'no-return-assign': 'off',
     'no-unused-expressions': 'off',
-    'no-param-reassign': 'warn',
+    'no-param-reassign': 'off',
     'no-unused-vars': 'warn',
     'no-empty': 'warn',
     'vue/multi-word-component-names': 'off',

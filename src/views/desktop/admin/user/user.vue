@@ -9,28 +9,13 @@
 <script setup>
 import AppList from '~/components/app-list.vue';
 
-const ws = new WebSocket('ws://localhost/ws');
-ws.addEventListener('open', () => {
-  console.log('websocket open');
-  ws.send('hello');
-});
-
-ws.addEventListener('close', () => {
-  console.log('websocket close');
-});
-
-ws.addEventListener('error', () => {
-  console.log('websocket error');
-});
-
-ws.addEventListener('message', (event) => {
-  console.log('Received：', event.data);
-});
-//
 const listRef = ref(null);
 
 const schema = {
   properties: {
+    test: {
+      type: 'number',
+    },
     id: {
       type: 'string',
       input: 'hidden',
@@ -38,6 +23,18 @@ const schema = {
     userName: {
       type: 'string',
       title: '用户名',
+      readOnly: true,
+      rules: [
+        {
+          required: true,
+        },
+      ],
+    },
+    password: {
+      type: 'string',
+      title: '密码',
+      input: 'password',
+      placeholder: '创建用户或修改密码时填写',
     },
     name: {
       type: 'string',
@@ -65,11 +62,13 @@ const schema = {
       type: 'string',
       title: '创建时间',
       input: 'datetime',
+      hideForEdit: true,
     },
     modifiedAt: {
       type: 'string',
       title: '修改时间',
       input: 'datetime',
+      hideForEdit: true,
     },
     rowVersion: {
       type: 'string',
@@ -86,15 +85,7 @@ const queryModel = {
   data: null,
   schema: {
     properties: {
-      userName: {
-        type: 'string',
-        title: '用户名',
-        rules: [
-          {
-            required: true,
-          },
-        ],
-      },
+      userName: schema.properties.userName,
     },
   },
 };
@@ -103,12 +94,11 @@ const listModel = {
   schema,
 };
 const detailModel = {
-  disabled: true,
   data: null,
   schema,
 };
 const createModel = {
-  data: {},
+  data: null,
   schema,
 };
 const updateModel = {

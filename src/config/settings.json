@@ -9,5 +9,6 @@
   "isUseTabsRouter": true,
   "menuCollapse": false,
   "roleSwitchable": true,
-  "loglevel": "info"
+  "loglevel": "info",
+  "useHttpMethodOverride": false
 }

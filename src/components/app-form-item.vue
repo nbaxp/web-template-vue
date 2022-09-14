@@ -14,7 +14,7 @@
             :schema="schema.properties[key]"
             :prefix="key"
             :validate="validate"
-            :disabled="disabled"
+            :mode="mode"
           />
         </el-form-item>
       </template>
@@ -59,16 +59,17 @@
       </template>
       <template v-else>
         <el-form-item
+          v-if="showItem(key, value)"
           :prop="prefix ? prefix + '.' + key : key"
           :label="value.title"
           :rules="validate ? value.rules : null"
-          :title="key"
+          :title="key + ':' + JSON.stringify(model[key])"
         >
           <app-form-input
             :prop="key"
             :model="model"
             :schema="value"
-            :disabled="disabled || value.disabled"
+            :mode="mode"
           />
         </el-form-item>
       </template>
@@ -96,9 +97,9 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-  disabled: {
-    type: Boolean,
-    default: false,
+  mode: {
+    type: String,
+    default: 'query',
   },
 });
 const model = reactive(props.modelValue);
@@ -111,6 +112,18 @@ watch(schema, (value) => {
   emit('update:schema', value);
 });
 //
+const showItem = (propertyName, propertySchema) => {
+  if (propertyName === 'id') {
+    return false;
+  }
+  if (propertySchema.input === 'hidden') {
+    return false;
+  }
+  if (propertySchema.hideForEdit && (props.mode === 'create' || props.mode === 'update')) {
+    return false;
+  }
+  return true;
+};
 const addItem = (items, properties) => {
   if (items.length) {
     items.push(JSON.parse(JSON.stringify(items[items.length - 1])));

@@ -65,7 +65,7 @@ const routes = [
     },
     children: [
       {
-        path: 'home',
+        path: 'info',
         component: view('account/info'),
         meta: {
           title: '个人信息',
@@ -109,6 +109,8 @@ const routes = [
           title: '列表页',
           icon: 'page',
           cached: true,
+          requiresAuth: true,
+          permission: 'list-list',
         },
       },
       {
@@ -134,7 +136,7 @@ const routes = [
               title: '用户管理',
               icon: 'user',
               requiresAuth: true,
-              permission: '/admin/user',
+              permission: 'list-user',
             },
           },
           {
@@ -144,7 +146,7 @@ const routes = [
               title: '角色管理',
               icon: 'role',
               requiresAuth: true,
-              permission: '/admin/role',
+              permission: 'list-role',
             },
           },
           {
@@ -154,7 +156,7 @@ const routes = [
               title: '权限管理',
               icon: 'permission',
               requiresAuth: true,
-              permission: '/admin/permission',
+              permission: 'list-permission',
             },
           },
         ],

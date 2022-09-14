@@ -1,6 +1,6 @@
 import wsm from 'wsmock-js';
 
-export default function useWebSocket() {
+export default function useMock() {
   wsm.mock({
     url: 'ws://localhost/ws',
     sendInterval: 'onreceive',

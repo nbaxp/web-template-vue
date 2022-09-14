@@ -23,101 +23,200 @@ import { ElMessage } from 'element-plus';
 import AppForm from '~/components/app-form.vue';
 
 const formRef = ref(null);
+
+const rules = [
+  {
+    required: true,
+    message: '必填项',
+  },
+];
+
+const options = [
+  { value: 'value1', label: 'option1' },
+  { value: 'value2', label: 'option2' },
+  { value: 'value3', label: 'option3' },
+];
+
+let i = 0;
+
+const prop = () => `prop${(i += 1)}`;
+
 const model = reactive({
   data: null,
   schema: {
-    title: '表单示例',
     type: 'object',
     properties: {
-      test1: {
-        title: 'string[ui=text]',
+      [prop()]: {
+        title: 'string[color]',
         type: 'string',
-        default: null,
-        rules: [
-          {
-            required: true,
-          },
-        ],
+        input: 'color',
+        showAlpha: true,
+        rules,
       },
-      test2: {
-        title: 'object',
-        type: 'object',
-        rules: [
-          {
-            required: true,
-          },
-        ],
-        properties: {
-          test21: {
-            title: 'object.string1[ui=text]',
-            type: 'string',
-            default: null,
-            rules: [
-              {
-                required: true,
-              },
-            ],
-          },
-          test22: {
-            title: 'object.string2[ui=text]',
-            type: 'string',
-            default: null,
-            rules: [
-              {
-                required: true,
-              },
-            ],
-          },
-        },
+      [prop()]: {
+        title: 'string=>el-input',
+        type: 'string',
+        rules,
       },
-      test3: {
-        title: 'number[ui=select]',
+      [prop()]: {
+        title: 'number=>el-input-number',
         type: 'number',
-        default: null,
-        rules: [
-          {
-            required: true,
-          },
-        ],
-        ui: 'select',
-        options: [
-          { value: 1, text: 'one' },
-          { value: 2, text: 'two' },
-          { value: 3, text: 'three' },
-        ],
+        precision: 2,
+        step: 0.5,
+        min: 0,
+        max: 10,
+        rules,
       },
-      test4: {
-        title: 'array[items.type=string][ui=select]',
+      [prop()]: {
+        title: 'number=>el-slider',
+        type: 'number',
+        input: 'slider',
+      },
+      [prop()]: {
+        title: 'number=>el-rate',
+        type: 'number',
+        input: 'rate',
+        max: 6,
+      },
+      [prop()]: {
+        title: 'boolean=>el-checkbox',
+        type: 'boolean',
+      },
+      [prop()]: {
+        title: 'boolean[switch]',
+        type: 'boolean',
+        input: 'switch',
+      },
+      [prop()]: {
+        title: 'string[radio-group]',
+        type: 'string',
+        input: 'radio-group',
+        options,
+        rules,
+      },
+      [prop()]: {
+        title: 'array[checkbox-group]',
         type: 'array',
-        default: [],
         items: {
           type: 'string',
         },
-        rules: [
-          {
-            required: true,
-          },
-        ],
-        ui: 'select',
-        multiple: true,
-        options: [
-          { value: 26, text: 'A' },
-          { value: 27, text: 'B' },
-          { value: 28, text: 'C' },
-        ],
+        input: 'checkbox-group',
+        options,
+        rules,
       },
-      test5: {
+      [prop()]: {
+        title: 'array[transfer]',
+        type: 'array',
+        items: {
+          type: 'string',
+        },
+        input: 'transfer',
+        options,
+        rules,
+      },
+      [prop()]: {
+        title: 'string[select]',
+        type: 'string',
+        input: 'select',
+        options,
+        rules,
+      },
+      [prop()]: {
+        title: 'string[select][multiple]',
+        type: 'array',
+        items: {
+          type: 'string',
+        },
+        input: 'select',
+        multiple: true,
+        options,
+        rules,
+      },
+      [prop()]: {
+        title: 'string[cascader]',
+        type: 'string',
+        items: {
+          type: 'string',
+        },
+        input: 'cascader',
+        options,
+        rules,
+      },
+      [prop()]: {
+        title: 'string[cascader][multiple]',
+        type: 'array',
+        items: {
+          type: 'string',
+        },
+        input: 'cascader',
+        multiple: true,
+        options,
+        rules,
+      },
+      [prop()]: {
+        title: 'string[date]',
+        type: 'string',
+        input: 'date',
+        rules,
+      },
+      [prop()]: {
+        title: 'string[datetime]',
+        type: 'string',
+        input: 'datetime',
+        rules,
+      },
+      start: {
+        title: 'string[daterange]',
+        type: 'array',
+        items: {
+          type: 'string',
+        },
+        input: 'daterange',
+        end: 'end',
+        disabledDate: '(value)=>value<new Date()',
+        rules,
+      },
+      end: {
+        title: 'string[datetime]',
+        type: 'string',
+        input: 'hidden',
+        rules,
+      },
+      [prop()]: {
+        title: 'string[image]',
+        type: 'string',
+        input: 'image',
+        rules,
+      },
+      [prop()]: {
+        title: 'array[image][multiple]',
+        type: 'array',
+        items: { type: 'string' },
+        input: 'image',
+        multiple: true,
+        accept: '.jpg,.png',
+        rules,
+      },
+      [prop()]: {
+        title: 'object',
+        type: 'object',
+        rules,
+        properties: {
+          [prop()]: {
+            title: 'object.string1[ui=text]',
+            type: 'string',
+            rules,
+          },
+          [prop()]: {
+            title: 'object.string2[ui=text]',
+            type: 'string',
+            rules,
+          },
+        },
+      },
+      [prop()]: {
         title: 'array[items.tpye=object]',
         type: 'array',
-        default: [
-          { text: 'one', value: 1 },
-          { text: 'two', value: 2 },
-        ],
-        rules: [
-          {
-            required: true,
-          },
-        ],
         items: {
           type: 'object',
           properties: {
@@ -125,24 +224,21 @@ const model = reactive({
               title: 'array.object.string[ui=text]',
               type: 'string',
               default: 'text1',
-              rules: [
-                {
-                  required: true,
-                },
-              ],
+              rules,
             },
             value: {
               title: 'array.object.number[ui=text]',
               type: 'number',
               default: null,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
+              rules,
             },
           },
         },
+        default: [
+          { text: 'one', value: 1 },
+          { text: 'two', value: 2 },
+        ],
+        rules,
       },
     },
   },

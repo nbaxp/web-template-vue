@@ -69,12 +69,21 @@ body {
   height: 100%;
 }
 
+.el-table thead .cell,
+.el-table .el-table__cell .cell,
 .el-table .el-table-fixed-column--left .cell,
 .el-table .el-table-fixed-column--right .cell {
   white-space: nowrap;
 }
 
-.router-link {
+button.el-button:focus {
+  color: var(--el-button-text-color);
+  background-color: var(--el-button-bg-color);
+  border-color: var(--el-button-border-color);
+}
+
+.router-link,
+.router-link-active {
   color: var(--el-text-color-primary);
 }
 
