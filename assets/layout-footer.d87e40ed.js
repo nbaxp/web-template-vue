@@ -1,1 +1,0 @@
-import{u as t,p as o,Z as s,e as r,o as a}from"./index.70f90e7f.js";const c={class:"flex justify-center items-center w-full h-full"},_={__name:"layout-footer",setup(n){const e=t();return(p,l)=>(a(),o("div",c,s(r(e).copyright),1))}};export{_ as default};
