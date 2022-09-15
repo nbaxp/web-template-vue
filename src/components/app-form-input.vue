@@ -330,9 +330,10 @@
 <script setup>
 import { ElMessage } from 'element-plus';
 
+import cache from '~/cache';
 import SvgIcon from '~/components/svg-icon.vue';
 import request from '~/request';
-import { extensionToMimetype, findPath, importFunction, mimetypeToExension } from '~/utils';
+import { extensionToMimetype, findPath, formatBytes, importFunction, mimetypeToExension } from '~/utils';
 
 const props = defineProps({
   prop: {
@@ -384,13 +385,25 @@ const getSelectDisplay = () => {
 const getMultipleSelectDisplay = () => {
   return selectOptions.value.filter((o) => model[props.prop].find((i) => i === o.value)).map((o) => o.label);
 };
+const getOptions = async (url) => {
+  const data = await navigator.locks.request(url, async () => {
+    let result = cache.get(url);
+    if (!result) {
+      const response = await request.get(url);
+      result = response.data.data ?? response.data;
+      cache.set(url, result, 60 * 1000);
+    }
+    return result;
+  });
+  return data ?? [];
+};
 if (props.schema.url) {
   if (props.schema.parent) {
     watchEffect(async () => {
       const parentValue = model[props.schema.parent];
       if (parentValue) {
-        const response = await request.get(`${props.schema.url}?parent=${parentValue}`);
-        selectOptions.value = response.data.data ?? response.data;
+        const url = `${props.schema.url}?parent=${parentValue}`;
+        selectOptions.value = await getOptions(url);
         if (model[props.prop] && !selectOptions.value.some((o) => o.value === model[props.prop])) {
           model[props.prop] = null;
         }
@@ -503,16 +516,6 @@ const onRemove = (file) => {
     model[props.prop] = null;
   }
 };
-const formatBytes = (bytes, decimals = 2) => {
-  if (bytes === 0) {
-    return '0 Bytes';
-  }
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
-};
 const fileTypes = props.schema.accept?.split(',').map((o) => extensionToMimetype(o)) ?? [];
 const beforeUpload = (file) => {
   console.log(`file.type:${file.type}`);
@@ -545,8 +548,8 @@ const onUploadSuccess = (uploadFile, uploadFiles) => {
 onMounted(async () => {
   disabledDate = await importFunction(props.schema.disabledDate ?? '()=>false');
   if (props.schema.url && !props.schema.parent) {
-    const response = await request.get(props.schema.url);
-    selectOptions.value = response.data.data ?? response.data;
+    const { url } = props.schema;
+    selectOptions.value = await getOptions(url);
   }
 });
 </script>

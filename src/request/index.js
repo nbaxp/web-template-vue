@@ -34,8 +34,8 @@ const request = axios.create(globalConfig);
 request.interceptors.request.use(
   function (config) {
     log.debug(`request:[${config.method}][${config.baseURL}${config.url}]`);
-    if (config.params ?? config.data) {
-      log.debug(JSON.parse(JSON.stringify(config.params ?? config.data)));
+    if (config.data) {
+      log.debug(JSON.parse(JSON.stringify(config.data)));
     }
     const userStore = useUserStore();
     const { token } = userStore;
