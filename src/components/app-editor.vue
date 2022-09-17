@@ -81,7 +81,6 @@ class MyUploadAdapter {
 }
 ///
 const onReady = (editor) => {
-  console.log(editor);
   editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
     return new MyUploadAdapter(loader);
   };

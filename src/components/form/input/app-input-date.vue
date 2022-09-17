@@ -1,5 +1,5 @@
 <template>
-  <template v-if="disabled">{{ getDate() }}</template>
+  <template v-if="disabled">{{ getDate }}</template>
   <el-date-picker
     v-else
     v-bind="$attrs"
@@ -45,7 +45,7 @@ watch(model, (value) => {
 //
 const type = props.schema.input ?? props.schema.type;
 //
-const getDate = () => {
+const getDate = computed(() => {
   if (type === 'date') {
     return new Date(model[props.prop]).toLocaleDateString();
   }
@@ -59,7 +59,7 @@ const getDate = () => {
   }
   // datetimerange
   return `${new Date(model[props.prop]).toLocaleString()} - ${new Date(model[props.schema.end]).toLocaleString()}`;
-};
+});
 //
 const viewModel = computed({
   get() {

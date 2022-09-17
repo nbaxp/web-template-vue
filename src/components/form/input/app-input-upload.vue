@@ -157,6 +157,8 @@ watchEffect(() => {
     } else {
       fileList.value = [{ name: props.prop, url: model[props.prop] }];
     }
+  } else {
+    fileList.value = [];
   }
 });
 
@@ -179,7 +181,6 @@ const onRemove = (file) => {
 };
 
 const beforeUpload = (file) => {
-  console.log(`file.type:${file.type}`);
   if (props.schema.accept && !fileTypes.some((o) => o === file.type)) {
     ElMessage.error(`当前文件类型 ${mimetypeToExension(file.type) ?? file.type}，可选文件类型 ${props.schema.accept}`);
     return false;

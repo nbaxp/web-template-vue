@@ -70,7 +70,7 @@
     />
   </template>
   <template v-else-if="type === 'radio-group'">
-    <el-tag v-if="readOnly">{{ getSelectDisplay() }}</el-tag>
+    <el-tag v-if="readOnly">{{ getSelectDisplay }}</el-tag>
     <el-radio-group
       v-else
       v-model="model[prop]"
@@ -87,7 +87,7 @@
   <template v-else-if="type === 'checkbox-group'">
     <template v-if="readOnly">
       <el-tag
-        v-for="item in getMultipleSelectDisplay()"
+        v-for="item in getMultipleSelectDisplay"
         :key="item"
         class="mr-2"
         >{{ item }}</el-tag
@@ -109,7 +109,7 @@
   <template v-else-if="type === 'transfer'">
     <template v-if="readOnly">
       <el-tag
-        v-for="item in getMultipleSelectDisplay()"
+        v-for="item in getMultipleSelectDisplay"
         :key="item"
         class="mr-2"
         >{{ item }}</el-tag
@@ -126,55 +126,21 @@
     />
   </template>
   <template v-else-if="type === 'select'">
-    <template v-if="readOnly">
-      <template v-if="schema.multiple">
-        <el-tag
-          v-for="item in getMultipleSelectDisplay()"
-          :key="item"
-          class="mr-2"
-          >{{ item }}</el-tag
-        >
-      </template>
-      <el-tag v-else>{{ getSelectDisplay() }}</el-tag>
-    </template>
-    <el-select
-      v-else
-      v-model="model[prop]"
-      :multiple="!!schema.multiple"
-      :placeholder="placeholder"
+    <app-input-select
+      :model="model"
+      :prop="prop"
+      :schema="schema"
       :disabled="readOnly"
-      clearable
-    >
-      <el-option
-        v-for="item in selectOptions"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value"
-      />
-    </el-select>
+      :placeholder="placeholder"
+    />
   </template>
   <template v-else-if="type === 'cascader'">
-    <template v-if="readOnly">
-      <template v-if="schema.multiple">
-        <el-tag
-          v-for="item in getCascaderDisplay()"
-          :key="item"
-          class="mr-2"
-        >
-          {{ item }}
-        </el-tag>
-      </template>
-      <el-tag v-else>{{ getCascaderDisplay() }}</el-tag>
-    </template>
-    <el-cascader
-      v-else
-      v-model="cascaderModel"
-      :placeholder="placeholder"
+    <app-input-cascader
+      :model="model"
+      :prop="prop"
+      :schema="schema"
       :disabled="readOnly"
-      :options="selectOptions"
-      :props="{ multiple: !!schema.multiple, checkStrictly: !!schema.checkStrictly }"
-      clearable
-      @change="onCascaderChange"
+      :placeholder="placeholder"
     />
   </template>
   <template v-else-if="type === 'date' || type === 'datetime' || type === 'daterange' || type === 'datetimerange'">
@@ -234,7 +200,6 @@
 <script setup>
 import cache from '~/cache';
 import request from '~/request';
-import { findPath } from '~/utils';
 
 const props = defineProps({
   prop: {
@@ -278,14 +243,17 @@ const readOnly = computed(() => {
   }
   return false;
 });
-// select
+// options
 const selectOptions = ref(props.schema.options ?? []);
-const getSelectDisplay = () => {
+
+const getSelectDisplay = computed(() => {
   return selectOptions.value.find((o) => o.value === model[props.prop])?.label;
-};
-const getMultipleSelectDisplay = () => {
+});
+
+const getMultipleSelectDisplay = computed(() => {
   return selectOptions.value.filter((o) => model[props.prop].find((i) => i === o.value)).map((o) => o.label);
-};
+});
+
 const getOptions = async (url) => {
   const data = await navigator.locks.request(url, async () => {
     let result = cache.get(url);
@@ -297,55 +265,6 @@ const getOptions = async (url) => {
     return result;
   });
   return data ?? [];
-};
-if (props.schema.url) {
-  if (props.schema.parent) {
-    watchEffect(async () => {
-      const parentValue = model[props.schema.parent];
-      if (parentValue) {
-        const url = `${props.schema.url}?parent=${parentValue}`;
-        selectOptions.value = await getOptions(url);
-        if (model[props.prop] && !selectOptions.value.some((o) => o.value === model[props.prop])) {
-          model[props.prop] = null;
-        }
-      } else {
-        selectOptions.value = [];
-        model[props.prop] = null;
-      }
-    });
-  }
-}
-// cascade
-const cascaderModel = ref([]);
-const getCascaderDisplay = () => {
-  if (props.schema.multiple) {
-    return model[props.prop].map((o) =>
-      findPath(selectOptions.value, o)
-        .map((i) => i.label)
-        .join(' / '),
-    );
-  }
-  return findPath(selectOptions.value, model[props.prop])
-    .map((o) => o.label)
-    .join(' / ');
-};
-if (type === 'cascader' && model[props.prop]) {
-  if (props.schema.multiple) {
-    cascaderModel.value = model[props.prop].map((o) => findPath(selectOptions.value, o).map((i) => i.value));
-  } else {
-    // cascaderModel.value = [model[props.prop]];
-    cascaderModel.value = findPath(selectOptions.value, model[props.prop]).map((o) => o.value);
-  }
-}
-
-const onCascaderChange = (values) => {
-  console.log(cascaderModel.value, values);
-  if (props.schema.multiple) {
-    model[props.prop] = values;
-  } else {
-    const [value] = values;
-    model[props.prop] = value;
-  }
 };
 //
 onMounted(async () => {

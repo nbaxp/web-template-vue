@@ -64,23 +64,19 @@ function schemaToModel(properties) {
   return entity;
 }
 
-function findPath(tree, value, path = null, key = 'value', children = 'children') {
-  path = path ?? [];
+function findPath(tree, predicate, path = []) {
+  if (!tree) return [];
   for (let i = 0; i < tree.length; i += 1) {
-    const item = tree[i];
-    const tempPath = [...path];
-    tempPath.push(item);
-    if (item[key] === value) {
-      return tempPath;
+    const node = tree[i];
+    path.push(node);
+    if (predicate(node)) return path;
+    if (node.children) {
+      const findChildren = findPath(node.children, predicate, path);
+      if (findChildren.length) return findChildren;
     }
-    if (item[children]) {
-      const reuslt = findPath(item[children], value, tempPath, key, children);
-      if (reuslt) {
-        return reuslt;
-      }
-    }
+    path.pop();
   }
-  return path;
+  return [];
 }
 
 export {
