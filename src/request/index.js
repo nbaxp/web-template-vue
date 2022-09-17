@@ -4,6 +4,8 @@ import { ElMessage } from 'element-plus';
 import log from '~/log';
 import { useUserStore } from '~/store';
 
+const baseURL = '/api/';
+
 const getErrorMessageByCode = (code) => {
   let message = null;
   if (code === 400) {
@@ -25,7 +27,7 @@ const getErrorMessageByCode = (code) => {
 };
 
 const globalConfig = {
-  baseURL: '/api/',
+  baseURL,
   timeout: 30000,
 };
 
@@ -86,4 +88,5 @@ request.interceptors.response.use(
   },
 );
 
+export { baseURL };
 export default request;

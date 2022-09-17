@@ -37,7 +37,6 @@
   </el-form>
 </template>
 <script setup>
-import AppFormItem from '~/components/app-form-item.vue';
 import log from '~/log';
 import request from '~/request';
 import { useAppStore } from '~/store';

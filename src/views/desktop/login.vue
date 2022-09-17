@@ -54,7 +54,6 @@
 </template>
 
 <script setup>
-import AppForm from '~/components/app-form.vue';
 import HeaderLogo from '~/layouts/desktop/header-logo.vue';
 import { useUserStore } from '~/store';
 

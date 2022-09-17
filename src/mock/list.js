@@ -9,6 +9,7 @@ function createItem() {
     rowVersion: Mock.Random.guid(),
     color: Mock.Random.color(),
     colorRgba: Mock.Random.rgba(),
+    editor: 'hello world',
     input: Mock.Random.string(),
     number: Mock.Random.integer(1, 255),
     numberSlider: Mock.Random.integer(1, 10),

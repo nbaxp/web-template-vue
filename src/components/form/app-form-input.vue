@@ -19,6 +19,15 @@
       :predefine="schema.predefine"
     />
   </template>
+  <template v-else-if="type === 'editor'">
+    <template v-if="readOnly">
+      <div v-html="model[prop]"></div>
+    </template>
+    <app-editor
+      v-else
+      v-model="model[prop]"
+    />
+  </template>
   <template v-else-if="type === 'number'">
     <template v-if="readOnly">{{ model[prop] }}</template>
     <el-input-number
@@ -169,127 +178,22 @@
     />
   </template>
   <template v-else-if="type === 'date' || type === 'datetime' || type === 'daterange' || type === 'datetimerange'">
-    <template v-if="readOnly">{{ getDate() }}</template>
-    <el-date-picker
-      v-else
-      v-model="dateModel"
+    <app-input-date
+      :model="model"
+      :prop="prop"
+      :schema="schema"
       :disabled="readOnly"
-      :type="type"
       :placeholder="placeholder"
-      :start-placeholder="schema.startPlaceholder ?? '开始'"
-      :end-placeholder="schema.endPlaceholder ?? '结束'"
-      :unlink-panels="!!schema.unlinkPanels"
-      :disabled-date="disabledDate"
-      clearable
-      @change="onDateChange"
     />
   </template>
   <template v-else-if="type === 'image' || type === 'file'">
-    <template v-if="readOnly">
-      <template v-if="schema.multiple">
-        <template v-if="type === 'file'">
-          <el-link
-            v-for="item in model[prop]"
-            :key="item"
-            class="mr-2"
-            >{{ item }}</el-link
-          >
-        </template>
-        <template v-else>
-          <el-image
-            v-for="item in model[prop]"
-            :key="item"
-            :src="item"
-            :preview-src-list="[item]"
-            :preview-teleported="true"
-            style="height: 1em"
-            class="mr-2"
-          />
-        </template>
-      </template>
-      <template v-else>
-        <el-link v-if="type === 'file'">{{ model[prop] }}</el-link>
-        <el-image
-          v-else
-          :src="model[prop]"
-          :preview-src-list="[model[prop]]"
-          :preview-teleported="true"
-          style="height: 1em"
-        />
-      </template>
-    </template>
-    <el-upload
-      v-else
-      ref="upload"
-      v-model:file-list="fileList"
-      :accept="schema.accept"
-      :limit="schema.multiple ? schema.limit ?? 5 : 1"
-      :action="schema.action"
-      :multiple="!!schema.multiple"
-      :before-upload="beforeUpload"
-      :on-exceed="onExceed"
-      :on-success="onUploadSuccess"
-      :list-type="type === 'file' ? 'text' : 'picture-card'"
-      class="w-full"
-    >
-      <template #trigger>
-        <el-icon>
-          <i-ep-plus />
-        </el-icon>
-      </template>
-      <template #tip>
-        <div class="el-upload__tip">
-          <div>
-            单个文件大小限制：{{ formatBytes(size) }}，上传数量限制：{{ limit
-            }}<template v-if="schema.accept">，上传文件类型：{{ schema.accept }}</template>
-          </div>
-        </div>
-      </template>
-      <template #file="{ file }">
-        <template v-if="type === 'file'">
-          <div class="el-upload-list__item-info">
-            <a class="el-upload-list__item-name">
-              <el-icon class="el-icon--document"><i-ep-document /></el-icon>
-              <span class="el-upload-list__item-file-name">{{ file.url }}</span>
-            </a>
-            <el-icon
-              class="el-icon--close"
-              @click="onRemove(file)"
-              ><i-ep-close
-            /></el-icon>
-          </div>
-        </template>
-        <div v-else>
-          <img
-            class="el-upload-list__item-thumbnail"
-            :src="file.url"
-            alt=""
-          />
-          <span class="el-upload-list__item-actions">
-            <span
-              class="el-upload-list__item-preview"
-              @click="onPreview(file)"
-            >
-              <el-icon><i-ep-zoom-in /></el-icon>
-            </span>
-            <span
-              v-if="!disabled"
-              class="el-upload-list__item-delete"
-              @click="onRemove(file)"
-            >
-              <el-icon><i-ep-delete /></el-icon>
-            </span>
-          </span>
-        </div>
-      </template>
-    </el-upload>
-    <el-dialog v-model="preivewImageVisable">
-      <img
-        w-full
-        :src="previewImageUrl"
-        alt="schema.title"
-      />
-    </el-dialog>
+    <app-input-upload
+      :model="model"
+      :prop="prop"
+      :schema="schema"
+      :disabled="readOnly"
+      :placeholder="placeholder"
+    />
   </template>
   <template v-else>
     <template v-if="readOnly">
@@ -328,12 +232,9 @@
 </template>
 
 <script setup>
-import { ElMessage } from 'element-plus';
-
 import cache from '~/cache';
-import SvgIcon from '~/components/svg-icon.vue';
 import request from '~/request';
-import { extensionToMimetype, findPath, formatBytes, importFunction, mimetypeToExension } from '~/utils';
+import { findPath } from '~/utils';
 
 const props = defineProps({
   prop: {
@@ -446,107 +347,8 @@ const onCascaderChange = (values) => {
     model[props.prop] = value;
   }
 };
-// date||datetime||daterange
-const dateModel = ref(null);
-const getDate = () => {
-  if (type === 'date') {
-    return new Date(model[props.prop]).toLocaleDateString();
-  }
-  if (type === 'datetime') {
-    return new Date(model[props.prop]).toLocaleString();
-  }
-  if (type === 'daterange') {
-    return `${new Date(model[props.prop]).toLocaleDateString()} - ${new Date(
-      model[props.schema.end],
-    ).toLocaleDateString()}`;
-  }
-  // datetimerange
-  return `${new Date(model[props.prop]).toLocaleString()} - ${new Date(model[props.schema.end]).toLocaleString()}`;
-};
-if (type === 'date' || type === 'datetime') {
-  if (model[props.prop]) {
-    dateModel.value = new Date(model[props.prop]);
-  }
-}
-if ((type === 'daterange' || type === 'datetimerange') && model[props.prop] && model[props.schema.end]) {
-  dateModel.value = [new Date(model[props.prop]), new Date(model[props.schema.end])];
-}
-const onDateChange = (values) => {
-  if (Array.isArray(values)) {
-    // datarange
-    const [start = null, end = null] = values ?? [];
-    model[props.prop] = JSON.stringify(start);
-    model[props.schema.end] = JSON.stringify(end);
-  } else {
-    // date||datetime
-    model[props.prop] = JSON.stringify(values);
-  }
-};
-let disabledDate = () => false;
-// image
-const upload = ref(null);
-const fileList = ref([]);
-const preivewImageVisable = ref(false);
-const previewImageUrl = ref(null);
-const limit = computed(() => (props.schema.multiple ? props.schema.limit ?? 5 : 1));
-const size = computed(() => props.schema.size ?? 1024 * 1024);
-if (model[props.prop]) {
-  if (props.schema.multiple) {
-    fileList.value = model[props.prop].map((o) => ({ name: props.prop, url: o }));
-  } else {
-    fileList.value = [{ name: props.prop, url: model[props.prop] }];
-  }
-}
-watch(
-  fileList,
-  (value) => {
-    if (props.schema.multiple) {
-      model[props.prop] = value.map((o) => o.url);
-    } else {
-      model[props.prop] = value.length ? value.map((o) => o.url)[0] : null;
-    }
-  },
-  { deep: true },
-);
-const onRemove = (file) => {
-  upload.value.handleRemove(file);
-  if (props.schema.multiple) {
-    model[props.prop] = fileList.value.map((o) => o.url);
-  } else {
-    model[props.prop] = null;
-  }
-};
-const fileTypes = props.schema.accept?.split(',').map((o) => extensionToMimetype(o)) ?? [];
-const beforeUpload = (file) => {
-  console.log(`file.type:${file.type}`);
-  if (props.schema.accept && !fileTypes.some((o) => o === file.type)) {
-    ElMessage.error(`当前文件类型 ${mimetypeToExension(file.type) ?? file.type}，可选文件类型 ${props.schema.accept}`);
-    return false;
-  }
-  if (file.size > size.value) {
-    ElMessage.error(`当前文件大小 ${formatBytes(file.size)}，已超过 ${formatBytes(size.value)}`);
-    return false;
-  }
-  return true;
-};
-const onPreview = (file) => {
-  previewImageUrl.value = file.url;
-  preivewImageVisable.value = true;
-};
-const onExceed = (files, uploadFiles) => {
-  ElMessage.warning(
-    `上传最大数量为 ${limit.value}, 本次选择了 ${files.length} 个文件, 总计 ${
-      files.length + uploadFiles.length
-    } 个文件`,
-  );
-};
-const onUploadSuccess = (uploadFile, uploadFiles) => {
-  console.log(fileList.value);
-  fileList.value.find((o) => o.name === uploadFiles.name).url = uploadFile.data;
-};
 //
 onMounted(async () => {
-  disabledDate = await importFunction(props.schema.disabledDate ?? '()=>false');
   if (props.schema.url && !props.schema.parent) {
     const { url } = props.schema;
     selectOptions.value = await getOptions(url);

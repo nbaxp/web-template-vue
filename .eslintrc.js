@@ -43,5 +43,9 @@ module.exports = {
     'no-unused-vars': 'warn',
     'no-empty': 'warn',
     'vue/multi-word-component-names': 'off',
+    'vue/no-v-html': 'off',
+  },
+  globals: {
+    defineOptions: 'readonly',
   },
 };

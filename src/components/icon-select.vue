@@ -26,8 +26,6 @@
 </template>
 
 <script setup>
-import SvgIcon from '~/components/svg-icon.vue';
-
 const svgs = import.meta.glob('../assets/icons/**/*.svg');
 const icons = Object.keys(svgs).map((o) => o.substring(o.lastIndexOf('/') + 1, o.lastIndexOf('.')));
 const props = defineProps({

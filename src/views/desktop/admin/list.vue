@@ -54,6 +54,12 @@ const schema = {
       showAlpha: true,
       rules,
     },
+    editor: {
+      title: 'editor',
+      type: 'string',
+      input: 'editor',
+      rules,
+    },
     input: {
       title: '字符串',
       type: 'string',
@@ -229,7 +235,7 @@ const schema = {
       title: '文件',
       type: 'string',
       input: 'file',
-      action: '/api/upload',
+      action: 'upload',
       rules,
     },
     fileMultiple: {
@@ -237,7 +243,7 @@ const schema = {
       type: 'array',
       items: { type: 'string' },
       input: 'file',
-      action: '/api/upload',
+      action: 'upload',
       multiple: true,
       accept: '.jpg,.png',
       rules,
@@ -247,7 +253,7 @@ const schema = {
       type: 'string',
       input: 'image',
       accept: '.jpg,.png',
-      action: '/api/upload',
+      action: 'upload',
       rules,
     },
     imageMultiple: {

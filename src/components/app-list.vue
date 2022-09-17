@@ -181,7 +181,6 @@
 <script setup>
 import { ElMessage, ElMessageBox } from 'element-plus';
 
-import AppFormInput from '~/components/app-form-input.vue';
 import log from '~/log';
 import request from '~/request';
 import { useUserStore } from '~/store';

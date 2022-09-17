@@ -77,7 +77,6 @@
   </template>
 </template>
 <script setup>
-import AppFormInput from '~/components/app-form-input.vue';
 import { schemaToModel } from '~/utils';
 
 const props = defineProps({

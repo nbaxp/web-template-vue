@@ -1,6 +1,7 @@
 node_modules
 dist
 dist-ssr
+.vite-inspect
 # vscode local history plugin
 *.local
 # macOS

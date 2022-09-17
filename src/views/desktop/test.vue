@@ -1,10 +1,10 @@
 <template>
   <div class="w-full h-full overflow-auto">
     <app-form v-model="model" />
+    <icon-select></icon-select>
   </div>
 </template>
 <script setup>
-import AppForm from '~/components/app-form.vue';
 // ws
 const ws = new WebSocket('ws://localhost/ws');
 ws.addEventListener('open', () => {

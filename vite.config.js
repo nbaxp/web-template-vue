@@ -8,12 +8,14 @@ import IconsResolver from 'unplugin-icons/resolver';
 import icons from 'unplugin-icons/vite';
 import { ElementPlusResolver, VantResolver } from 'unplugin-vue-components/resolvers';
 import components from 'unplugin-vue-components/vite';
+import DefineOptions from 'unplugin-vue-define-options/vite';
 import { defineConfig } from 'vite';
 import inspect from 'vite-plugin-inspect';
 import svgLoader from 'vite-svg-loader';
 
 const autoImportOptions = {
   imports: ['vue', 'vue-router', 'pinia', '@vueuse/core'],
+  dirs: ['src/components'],
   vueTemplate: true,
   eslintrc: {
     enabled: true,
@@ -49,6 +51,7 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
+    DefineOptions(),
     inspect(),
     autoImport(autoImportOptions),
     unocss(unocssOptions),
