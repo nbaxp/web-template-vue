@@ -60,7 +60,7 @@ const appStore = useAppStore();
 const formRef = ref(null);
 const loading = ref(false);
 const disabled = ref(false);
-const errors = reactive({});
+const errors = ref({});
 
 if (!model.data) {
   if (!model.schema) {
@@ -98,9 +98,14 @@ async function load(data) {
   } else {
     config.data = data;
   }
-  const response = await request.request(config);
-  const result = response.data?.data ?? response.data;
-  return result;
+  try {
+    const response = await request.request(config);
+    const result = response.data?.data ?? response.data;
+    return result;
+  } catch (e) {
+    errors.value = e.response.data.data ?? e.response.data;
+    throw e;
+  }
 }
 const submit = async () => {
   try {

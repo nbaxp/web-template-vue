@@ -68,6 +68,7 @@ const schema = {
       type: 'string',
       title: '头像',
       input: 'image',
+      action: 'upload',
     },
     birthday: {
       type: 'string',

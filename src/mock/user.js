@@ -71,9 +71,15 @@ export default function useMock() {
   Mock.mock(new RegExp(idUrl), 'put', (request) => {
     const matches = request.url.match(idUrl);
     if (matches[1]) {
-      return { code: 200, message: '已更新', _status: 204 };
+      const { name } = JSON.parse(request.body ?? '{}');
+      if (name !== '管理员') {
+        return { code: 200, message: '已更新', _status: 204 };
+      }
     }
-    return { code: 400, message: '参数不能为空', _status: 404 };
+    const errors = {
+      name: '服务端返回的验证消息',
+    };
+    return { code: 400, data: errors, _status: 400 };
   });
 
   // delete:/resource
