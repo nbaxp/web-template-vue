@@ -1,0 +1,1 @@
+import{_ as e}from"./_plugin-vue_export-helper.cdc0426e.js";import{p as r,a1 as t,o as n}from"./index.8cf78fc7.js";const a={};function c(o,s){return n(),r("h1",null,t(o.$route.path),1)}const _=e(a,[["render",c]]);export{_ as default};
