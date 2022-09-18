@@ -13,50 +13,9 @@ const listRef = ref(null);
 
 const schema = {
   properties: {
-    test: {
-      type: 'number',
-    },
     id: {
       type: 'string',
       input: 'hidden',
-    },
-    userName: {
-      type: 'string',
-      title: '用户名',
-      readOnly: true,
-      rules: [
-        {
-          required: true,
-        },
-      ],
-    },
-    password: {
-      type: 'string',
-      title: '密码',
-      input: 'password',
-      placeholder: '创建用户或修改密码时填写',
-    },
-    name: {
-      type: 'string',
-      title: '姓名',
-    },
-    email: {
-      type: 'string',
-      title: '邮箱',
-    },
-    emailConfirmed: {
-      type: 'boolean',
-      title: '邮箱已确认',
-    },
-    avatar: {
-      type: 'string',
-      title: '头像',
-      input: 'image',
-    },
-    birthday: {
-      type: 'string',
-      title: '生日',
-      input: 'date',
     },
     createdAt: {
       type: 'string',
@@ -74,6 +33,47 @@ const schema = {
       type: 'string',
       input: 'hidden',
     },
+    userName: {
+      type: 'string',
+      title: '用户名',
+      readOnly: true,
+      sortable: 'custom',
+      rules: [
+        {
+          required: true,
+        },
+      ],
+    },
+    password: {
+      type: 'string',
+      title: '密码',
+      input: 'password',
+      placeholder: '创建用户或修改密码时填写',
+    },
+    name: {
+      type: 'string',
+      title: '姓名',
+      sortable: 'custom',
+    },
+    email: {
+      type: 'string',
+      title: '邮箱',
+      sortable: 'custom',
+    },
+    emailConfirmed: {
+      type: 'boolean',
+      title: '邮箱已确认',
+    },
+    avatar: {
+      type: 'string',
+      title: '头像',
+      input: 'image',
+    },
+    birthday: {
+      type: 'string',
+      title: '生日',
+      input: 'date',
+    },
   },
 };
 
@@ -82,10 +82,13 @@ const queryModel = {
   method: 'get',
   inline: true,
   disableValidation: true,
+  defaultSort: { prop: 'userName', order: 'asc' },
   data: null,
   schema: {
     properties: {
       userName: schema.properties.userName,
+      name: schema.properties.name,
+      email: schema.properties.email,
     },
   },
 };

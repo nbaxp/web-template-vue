@@ -45,8 +45,9 @@
     <el-slider
       v-else
       v-model="model[prop]"
-      :min="schema.min"
-      :max="schema.max"
+      :min="schema.min ?? 0"
+      :max="schema.max ?? 100"
+      style="min-width: 180px"
     />
   </template>
   <template v-else-if="type === 'rate'">

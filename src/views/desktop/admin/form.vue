@@ -3,6 +3,7 @@
     <app-form
       ref="formRef"
       v-model="model"
+      mode="create"
     >
       <template #footer>
         <el-form-item>
@@ -20,7 +21,7 @@
 <script setup>
 import { ElMessage } from 'element-plus';
 
-import AppForm from '~/components/app-form.vue';
+import AppForm from '~/components/form/app-form.vue';
 
 const formRef = ref(null);
 
@@ -32,7 +33,7 @@ const rules = [
 ];
 
 const options = [
-  { value: 'value1', label: 'option1' },
+  { value: 'value1', label: 'option1', children: [{ value: 'value1.1', label: 'options1.1' }] },
   { value: 'value2', label: 'option2' },
   { value: 'value3', label: 'option3' },
 ];
@@ -46,20 +47,52 @@ const model = reactive({
   schema: {
     type: 'object',
     properties: {
-      [prop()]: {
-        title: 'string[color]',
+      id: {
+        type: 'string',
+        input: 'hidden',
+      },
+      createdAt: {
+        type: 'string',
+        title: '创建时间',
+        input: 'datetime',
+        hideForEdit: true,
+      },
+      modifiedAt: {
+        type: 'string',
+        title: '修改时间',
+        input: 'datetime',
+        hideForEdit: true,
+      },
+      rowVersion: {
+        type: 'string',
+        input: 'hidden',
+      },
+      color: {
+        title: 'Color',
+        type: 'string',
+        input: 'color',
+        rules,
+      },
+      colorRgba: {
+        title: 'RGBA Color',
         type: 'string',
         input: 'color',
         showAlpha: true,
         rules,
       },
-      [prop()]: {
-        title: 'string=>el-input',
+      editor: {
+        title: 'editor',
+        type: 'string',
+        input: 'editor',
+        rules,
+      },
+      input: {
+        title: '字符串',
         type: 'string',
         rules,
       },
-      [prop()]: {
-        title: 'number=>el-input-number',
+      number: {
+        title: '数字',
         type: 'number',
         precision: 2,
         step: 0.5,
@@ -67,35 +100,35 @@ const model = reactive({
         max: 10,
         rules,
       },
-      [prop()]: {
-        title: 'number=>el-slider',
+      numberSlider: {
+        title: '滑动输入',
         type: 'number',
         input: 'slider',
       },
-      [prop()]: {
-        title: 'number=>el-rate',
+      numberRate: {
+        title: '评分',
         type: 'number',
         input: 'rate',
         max: 6,
       },
-      [prop()]: {
-        title: 'boolean=>el-checkbox',
+      boolean: {
+        title: 'Boolean',
         type: 'boolean',
       },
-      [prop()]: {
-        title: 'boolean[switch]',
+      booleanSwitch: {
+        title: '开关',
         type: 'boolean',
         input: 'switch',
       },
-      [prop()]: {
-        title: 'string[radio-group]',
+      radioGroup: {
+        title: '单选框',
         type: 'string',
         input: 'radio-group',
         options,
         rules,
       },
-      [prop()]: {
-        title: 'array[checkbox-group]',
+      checkBoxGroup: {
+        title: '复选框多选',
         type: 'array',
         items: {
           type: 'string',
@@ -104,8 +137,8 @@ const model = reactive({
         options,
         rules,
       },
-      [prop()]: {
-        title: 'array[transfer]',
+      transfer: {
+        title: '穿梭框多选',
         type: 'array',
         items: {
           type: 'string',
@@ -114,15 +147,15 @@ const model = reactive({
         options,
         rules,
       },
-      [prop()]: {
-        title: 'string[select]',
+      select: {
+        title: '单选',
         type: 'string',
         input: 'select',
         options,
         rules,
       },
-      [prop()]: {
-        title: 'string[select][multiple]',
+      selectMultiple: {
+        title: '多选',
         type: 'array',
         items: {
           type: 'string',
@@ -132,42 +165,68 @@ const model = reactive({
         options,
         rules,
       },
-      [prop()]: {
-        title: 'string[cascader]',
+      selectLazy1: {
+        title: '单选懒加载',
+        type: 'string',
+        input: 'select',
+        url: 'lazy/select1',
+        rules,
+      },
+      selectLazy2: {
+        title: '单选级联2',
+        type: 'string',
+        input: 'select',
+        url: 'lazy/select2',
+        parent: 'selectLazy1',
+        rules,
+      },
+      selectLazy3: {
+        title: '单选级联3',
+        type: 'string',
+        input: 'select',
+        url: 'lazy/select3',
+        parent: 'selectLazy2',
+        rules,
+      },
+      cascader: {
+        title: '级联',
         type: 'string',
         items: {
           type: 'string',
         },
         input: 'cascader',
+        checkStrictly: true,
         options,
         rules,
       },
-      [prop()]: {
-        title: 'string[cascader][multiple]',
+      cascaderMultiple: {
+        title: '级联多选',
         type: 'array',
         items: {
           type: 'string',
         },
         input: 'cascader',
+        checkStrictly: true,
         multiple: true,
         options,
         rules,
       },
-      [prop()]: {
-        title: 'string[date]',
+      date: {
+        title: '日期',
         type: 'string',
         input: 'date',
         rules,
       },
-      [prop()]: {
-        title: 'string[datetime]',
+      datetime: {
+        title: '日期时间',
         type: 'string',
         input: 'datetime',
+        disabledDate: (value) => value < new Date(),
         rules,
       },
       start: {
-        title: 'string[daterange]',
-        type: 'array',
+        title: '日期范围',
+        type: 'string',
         items: {
           type: 'string',
         },
@@ -182,64 +241,101 @@ const model = reactive({
         input: 'hidden',
         rules,
       },
-      [prop()]: {
-        title: 'string[image]',
+      startDatetime: {
+        title: '日期时间范围',
         type: 'string',
-        input: 'image',
+        items: {
+          type: 'string',
+        },
+        input: 'datetimerange',
+        end: 'endDatetime',
+        disabledDate: '(value)=>value<new Date()',
         rules,
       },
-      [prop()]: {
-        title: 'array[image][multiple]',
+      endDatetime: {
+        title: 'string[datetime]',
+        type: 'string',
+        input: 'hidden',
+        rules,
+      },
+      file: {
+        title: '文件',
+        type: 'string',
+        input: 'file',
+        action: 'upload',
+        rules,
+      },
+      fileMultiple: {
+        title: '文件多选',
         type: 'array',
         items: { type: 'string' },
-        input: 'image',
+        input: 'file',
+        action: 'upload',
         multiple: true,
         accept: '.jpg,.png',
         rules,
       },
-      [prop()]: {
-        title: 'object',
-        type: 'object',
+      image: {
+        title: '图片',
+        type: 'string',
+        input: 'image',
+        accept: '.jpg,.png',
+        action: 'upload',
         rules,
-        properties: {
-          [prop()]: {
-            title: 'object.string1[ui=text]',
-            type: 'string',
-            rules,
-          },
-          [prop()]: {
-            title: 'object.string2[ui=text]',
-            type: 'string',
-            rules,
-          },
-        },
       },
-      [prop()]: {
-        title: 'array[items.tpye=object]',
+      imageMultiple: {
+        title: '图片多选',
         type: 'array',
-        items: {
-          type: 'object',
-          properties: {
-            text: {
-              title: 'array.object.string[ui=text]',
-              type: 'string',
-              default: 'text1',
-              rules,
-            },
-            value: {
-              title: 'array.object.number[ui=text]',
-              type: 'number',
-              default: null,
-              rules,
-            },
-          },
-        },
-        default: [
-          { text: 'one', value: 1 },
-          { text: 'two', value: 2 },
-        ],
+        items: { type: 'string' },
+        input: 'image',
+        accept: '.jpg,.png',
+        action: '/api/upload',
+        multiple: true,
         rules,
       },
+      // [prop()]: {
+      //   title: 'object',
+      //   type: 'object',
+      //   rules,
+      //   properties: {
+      //     [prop()]: {
+      //       title: 'object.string1[ui=text]',
+      //       type: 'string',
+      //       rules,
+      //     },
+      //     [prop()]: {
+      //       title: 'object.string2[ui=text]',
+      //       type: 'string',
+      //       rules,
+      //     },
+      //   },
+      // },
+      // [prop()]: {
+      //   title: 'array[items.tpye=object]',
+      //   type: 'array',
+      //   items: {
+      //     type: 'object',
+      //     properties: {
+      //       text: {
+      //         title: 'array.object.string[ui=text]',
+      //         type: 'string',
+      //         default: 'text1',
+      //         rules,
+      //       },
+      //       value: {
+      //         title: 'array.object.number[ui=text]',
+      //         type: 'number',
+      //         default: null,
+      //         rules,
+      //       },
+      //     },
+      //   },
+      //   default: [
+      //     { text: 'one', value: 1 },
+      //     { text: 'two', value: 2 },
+      //   ],
+      //   rules,
+      // },
     },
   },
 });

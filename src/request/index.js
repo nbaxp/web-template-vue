@@ -36,6 +36,9 @@ const request = axios.create(globalConfig);
 request.interceptors.request.use(
   function (config) {
     log.debug(`request:[${config.method}][${config.baseURL}${config.url}]`);
+    if (config.params) {
+      log.debug(JSON.parse(JSON.stringify(config.params)));
+    }
     if (config.data) {
       log.debug(JSON.parse(JSON.stringify(config.data)));
     }

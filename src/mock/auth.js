@@ -272,7 +272,7 @@ export default function useMock() {
     const code = 200;
     const data = {
       name: '管理员',
-      avatar: './upload/avatar.svg',
+      avatar: '/web-template-vue/upload/avatar.svg',
     };
     return new Promise((resolve) => {
       jose

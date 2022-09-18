@@ -46,6 +46,7 @@ const schema = {
       type: 'string',
       input: 'color',
       rules,
+      sortable: 'custom',
     },
     colorRgba: {
       title: 'RGBA Color',
@@ -195,6 +196,7 @@ const schema = {
       title: '日期时间',
       type: 'string',
       input: 'datetime',
+      disabledDate: (value) => value < new Date(),
       rules,
     },
     start: {
@@ -274,6 +276,7 @@ const queryModel = {
   method: 'get',
   inline: true,
   disableValidation: true,
+  schema,
 };
 const listModel = {
   data: [],

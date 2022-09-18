@@ -51,8 +51,10 @@
             highlight-current-row
             table-layout="auto"
             :data="model.listModel.data"
+            :default-sort="sortModel"
             :lazy="true"
             :load="lazyLoad"
+            @sort-change="sortChange"
             @selection-change="onSelectionChange"
           >
             <el-table-column
@@ -80,7 +82,7 @@
                   :key="key"
                   :prop="key"
                   :label="item.title ?? key"
-                  :sortable="item.sortable"
+                  :sortable="item.sortable ? (model.listModel.disablePagination ? true : 'custom') : null"
                 >
                   <template #default="scope">
                     <app-form-input
@@ -197,6 +199,7 @@ const emit = defineEmits(['update:modelValue', 'command']);
 watch(model, (value) => {
   emit('update:modelValue', value);
 });
+model.queryModel.mode = 'query';
 if (!model.detailModel.disabled) {
   model.detailModel.disabled = true;
 }
@@ -212,6 +215,8 @@ const pageModel = reactive({
   pageSize: 10,
   total: 0,
 });
+const sortModel = reactive({});
+
 const dialogModel = reactive({
   visable: false,
   title: null,
@@ -231,9 +236,24 @@ const lazyLoad = async (row, node, resolve) => {
   }
 };
 
-onMounted(async () => {
-  await query();
-});
+const setSortDefault = () => {
+  if (!model.listModel.disablePagination) {
+    sortModel.prop = model.queryModel.defaultSort?.prop;
+    sortModel.order = model.queryModel.defaultSort?.order === 'desc' ? 'descending' : 'ascending';
+  }
+};
+
+const sortChange = async (column) => {
+  if (!model.listModel.disablePagination) {
+    if (column.order === null) {
+      setSortDefault();
+    } else {
+      sortModel.prop = column.prop;
+      sortModel.order = column.order;
+    }
+    await query();
+  }
+};
 
 const resetQueryForm = async () => {
   queryFormRef.value.reset();
@@ -250,21 +270,28 @@ const onPageSizeChange = async () => {
 };
 
 const beforeQuery = (callback) => {
-  if (!model.listModel.disablePage) {
-    const pageData = {};
+  const data = {};
+  if (!model.listModel.disablePagination) {
     if (pageModel.pageIndex !== 1) {
-      pageData.pageIndex = pageModel.pageIndex;
+      data.pageIndex = pageModel.pageIndex;
     }
     if (pageModel.pageSize !== 10) {
-      pageData.pageSize = pageModel.pageSize;
+      data.pageSize = pageModel.pageSize;
     }
-    callback(pageData);
   }
+  if (sortModel.prop) {
+    data.orderBy = sortModel.prop;
+    if (sortModel.order === 'descending') {
+      data.orderBy += ' desc';
+    }
+  }
+  //
+  callback(data);
 };
 
 const afterQuery = (data) => {
   model.listModel.data = data.items;
-  if (!model.listModel.disablePage) {
+  if (!model.listModel.disablePagination) {
     pageModel.total = data.total;
   }
 };
@@ -418,4 +445,9 @@ const onClick = async (permission, items) => {
     emit('command', permission, items);
   }
 };
+//
+onMounted(async () => {
+  setSortDefault();
+  await query();
+});
 </script>

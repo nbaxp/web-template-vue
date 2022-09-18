@@ -5,8 +5,9 @@
     element-loading-background="rgba(0, 0, 0, 0)"
     :inline="model.inline"
     :model="model.data"
-    label-width="auto"
-    :label-suffix="model.labelSufix"
+    :label-width="model.labelWidth ?? 'auto'"
+    :label-suffix="model.labelSufix ?? '：'"
+    :label-position="model.labelPosition"
   >
     <slot name="header">
       <h2
@@ -21,6 +22,7 @@
       :schema="model.schema"
       :validate="!model.disableValidation"
       :mode="model.mode"
+      :errors="errors"
     />
     <slot name="footer">
       <el-form-item>
@@ -58,6 +60,7 @@ const appStore = useAppStore();
 const formRef = ref(null);
 const loading = ref(false);
 const disabled = ref(false);
+const errors = reactive({});
 
 if (!model.data) {
   if (!model.schema) {

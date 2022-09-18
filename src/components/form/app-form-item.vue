@@ -6,7 +6,8 @@
     <template v-if="!value.skip">
       <template v-if="value.type === 'object'">
         <el-form-item
-          :label="value.title"
+          :label="getLabel(value)"
+          :label-width="getLabelWidth(value)"
           :rules="value.rules"
         >
           <app-form-item
@@ -20,7 +21,8 @@
       </template>
       <template v-else-if="value.type === 'array' && value.items.type === 'object'">
         <el-form-item
-          :label="value.title"
+          :label="getLabel(value)"
+          :label-width="getLabelWidth(value)"
           :rules="value.rules"
         >
           <el-icon
@@ -41,6 +43,8 @@
               :schema="schema.properties[key].items"
               :prefix="key + '[' + index + ']'"
               :validate="validate"
+              :label="getLabel(value)"
+              :label-width="getLabelWidth(value)"
             />
             <el-icon
               class="cursor-pointer mx-2"
@@ -60,10 +64,13 @@
       <template v-else>
         <el-form-item
           v-if="showItem(key, value)"
-          :prop="prefix ? prefix + '.' + key : key"
-          :label="value.title"
+          :prop="getProp(key)"
+          :label="getLabel(value)"
+          :label-width="getLabelWidth(value)"
           :rules="validate ? value.rules : null"
+          :error="errors[getProp(key)]"
           :title="key + ':' + JSON.stringify(model[key])"
+          :style="itemStyle"
         >
           <app-form-input
             :prop="key"
@@ -96,9 +103,13 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  errors: {
+    type: Object,
+    default: null,
+  },
   mode: {
     type: String,
-    default: 'query',
+    default: 'create',
   },
 });
 const model = reactive(props.modelValue);
@@ -111,6 +122,34 @@ watch(schema, (value) => {
   emit('update:schema', value);
 });
 //
+const itemStyle = {
+  width: props.mode === 'query' ? '30%' : null,
+};
+const getProp = (key) => {
+  return props.prefix ? `${props.prefix}.${key}` : key;
+};
+const getLabel = (value) => {
+  // if (props.mode === 'query') {
+  //   const type = value.input ?? value.type;
+  //   if (
+  //     type === 'string' ||
+  //     type === 'text' ||
+  //     type === 'date' ||
+  //     type === 'datetime' ||
+  //     type === 'daterange' ||
+  //     type === 'datetimerange' ||
+  //     type === 'select' ||
+  //     type === 'cascader'
+  //   ) {
+  //     return null;
+  //   }
+  // }
+  return value.title;
+};
+const getLabelWidth = (value) => {
+  return value.labelWidth ?? props.mode === 'query' ? '120px' : 'auto';
+};
+
 const showItem = (propertyName, propertySchema) => {
   if (propertyName === 'id') {
     return false;
@@ -118,8 +157,24 @@ const showItem = (propertyName, propertySchema) => {
   if (propertySchema.input === 'hidden') {
     return false;
   }
-  if (propertySchema.hideForEdit && (props.mode === 'create' || props.mode === 'update')) {
-    return false;
+  if (props.mode === 'query') {
+    if (propertySchema.hideForQuery) {
+      return false;
+    }
+    if (
+      propertySchema.input === 'hidden' ||
+      propertySchema.input === 'transfer' ||
+      propertySchema.input === 'file' ||
+      propertySchema.input === 'image' ||
+      propertySchema.input === 'editor'
+    ) {
+      return false;
+    }
+  }
+  if (props.mode === 'create' || props.mode === 'update') {
+    if (propertySchema.hideForEdit) {
+      return false;
+    }
   }
   return true;
 };

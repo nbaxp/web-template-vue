@@ -32,10 +32,10 @@ function createItem() {
     end: new Date(),
     startDatetime: new Date(),
     endDatetime: new Date(),
-    file: '/upload/avatar.svg',
-    fileMultiple: ['/upload/avatar.svg', '/upload/avatar.svg'],
-    image: '/upload/avatar.svg',
-    imageMultiple: ['/upload/avatar.svg', '/upload/avatar.svg'],
+    file: '/web-template-vue/upload/avatar.svg',
+    fileMultiple: ['/web-template-vue/upload/avatar.svg', '/web-template-vue/upload/avatar.svg'],
+    image: '/web-template-vue/upload/avatar.svg',
+    imageMultiple: ['/web-template-vue/upload/avatar.svg', '/web-template-vue/upload/avatar.svg'],
   });
 }
 

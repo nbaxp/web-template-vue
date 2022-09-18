@@ -84,6 +84,12 @@ const viewModel = computed({
 //
 let disabledDate = () => false;
 onMounted(async () => {
-  disabledDate = await importFunction(props.schema.disabledDate ?? '()=>false');
+  if (props.schema.disabledDate) {
+    if (typeof props.schema.disabledDate === 'function') {
+      disabledDate = props.schema.disabledDate;
+    } else {
+      disabledDate = await importFunction(props.schema.disabledDate);
+    }
+  }
 });
 </script>

@@ -19,6 +19,7 @@ body {
 
 #app .el-header {
   position: fixed;
+  z-index: 10;
   width: 100%;
   background-color: var(--el-menu-bg-color);
   border-bottom: solid 1px var(--el-menu-border-color);

@@ -20,10 +20,12 @@ const schema = {
     name: {
       type: 'string',
       title: '名称',
+      sortable: true,
     },
     number: {
       type: 'string',
       title: '编号',
+      sortable: true,
     },
   },
 };

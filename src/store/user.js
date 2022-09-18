@@ -9,7 +9,7 @@ export default defineStore('user', {
     return {
       token: localStorage.getItem('token'),
       name: '昵称',
-      avatar: './logo.svg',
+      avatar: '/web-template-vue/logo.svg',
       roles: [],
       currentRole: null,
     };
