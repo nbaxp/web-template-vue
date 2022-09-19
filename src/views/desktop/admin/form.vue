@@ -25,12 +25,14 @@ import AppForm from '~/components/form/app-form.vue';
 
 const formRef = ref(null);
 
-const rules = [
-  {
-    required: true,
-    message: '必填项',
-  },
-];
+const rules = () =>
+  JSON.parse(
+    JSON.stringify([
+      {
+        required: true,
+      },
+    ]),
+  );
 
 const options = [
   { value: 'value1', label: 'option1', children: [{ value: 'value1.1', label: 'options1.1' }] },
@@ -71,25 +73,25 @@ const model = reactive({
         title: 'Color',
         type: 'string',
         input: 'color',
-        rules,
+        rules: rules(),
       },
       colorRgba: {
         title: 'RGBA Color',
         type: 'string',
         input: 'color',
         showAlpha: true,
-        rules,
+        rules: rules(),
       },
       editor: {
         title: 'editor',
         type: 'string',
         input: 'editor',
-        rules,
+        rules: rules(),
       },
       input: {
         title: '字符串',
         type: 'string',
-        rules,
+        rules: { type: 'string', required: true, whitespace: false, message: '%s invalid' },
       },
       number: {
         title: '数字',
@@ -98,7 +100,7 @@ const model = reactive({
         step: 0.5,
         min: 0,
         max: 10,
-        rules,
+        rules: rules(),
       },
       numberSlider: {
         title: '滑动输入',
@@ -125,7 +127,7 @@ const model = reactive({
         type: 'string',
         input: 'radio-group',
         options,
-        rules,
+        rules: rules(),
       },
       checkBoxGroup: {
         title: '复选框多选',
@@ -135,7 +137,7 @@ const model = reactive({
         },
         input: 'checkbox-group',
         options,
-        rules,
+        rules: rules(),
       },
       transfer: {
         title: '穿梭框多选',
@@ -145,14 +147,14 @@ const model = reactive({
         },
         input: 'transfer',
         options,
-        rules,
+        rules: rules(),
       },
       select: {
         title: '单选',
         type: 'string',
         input: 'select',
         options,
-        rules,
+        rules: rules(),
       },
       selectMultiple: {
         title: '多选',
@@ -163,14 +165,14 @@ const model = reactive({
         input: 'select',
         multiple: true,
         options,
-        rules,
+        rules: rules(),
       },
       selectLazy1: {
         title: '单选懒加载',
         type: 'string',
         input: 'select',
         url: 'lazy/select1',
-        rules,
+        rules: rules(),
       },
       selectLazy2: {
         title: '单选级联2',
@@ -178,7 +180,7 @@ const model = reactive({
         input: 'select',
         url: 'lazy/select2',
         parent: 'selectLazy1',
-        rules,
+        rules: rules(),
       },
       selectLazy3: {
         title: '单选级联3',
@@ -186,7 +188,7 @@ const model = reactive({
         input: 'select',
         url: 'lazy/select3',
         parent: 'selectLazy2',
-        rules,
+        rules: rules(),
       },
       cascader: {
         title: '级联',
@@ -197,7 +199,7 @@ const model = reactive({
         input: 'cascader',
         checkStrictly: true,
         options,
-        rules,
+        rules: rules(),
       },
       cascaderMultiple: {
         title: '级联多选',
@@ -209,20 +211,20 @@ const model = reactive({
         checkStrictly: true,
         multiple: true,
         options,
-        rules,
+        rules: rules(),
       },
       date: {
         title: '日期',
         type: 'string',
         input: 'date',
-        rules,
+        rules: rules(),
       },
       datetime: {
         title: '日期时间',
         type: 'string',
         input: 'datetime',
         disabledDate: (value) => value < new Date(),
-        rules,
+        rules: rules(),
       },
       start: {
         title: '日期范围',
@@ -233,13 +235,13 @@ const model = reactive({
         input: 'daterange',
         end: 'end',
         disabledDate: '(value)=>value<new Date()',
-        rules,
+        rules: rules(),
       },
       end: {
         title: 'string[datetime]',
         type: 'string',
         input: 'hidden',
-        rules,
+        rules: rules(),
       },
       startDatetime: {
         title: '日期时间范围',
@@ -250,20 +252,20 @@ const model = reactive({
         input: 'datetimerange',
         end: 'endDatetime',
         disabledDate: '(value)=>value<new Date()',
-        rules,
+        rules: rules(),
       },
       endDatetime: {
         title: 'string[datetime]',
         type: 'string',
         input: 'hidden',
-        rules,
+        rules: rules(),
       },
       file: {
         title: '文件',
         type: 'string',
         input: 'file',
         action: 'upload',
-        rules,
+        rules: rules(),
       },
       fileMultiple: {
         title: '文件多选',
@@ -273,7 +275,7 @@ const model = reactive({
         action: 'upload',
         multiple: true,
         accept: '.jpg,.png',
-        rules,
+        rules: rules(),
       },
       image: {
         title: '图片',
@@ -281,7 +283,7 @@ const model = reactive({
         input: 'image',
         accept: '.jpg,.png',
         action: 'upload',
-        rules,
+        rules: rules(),
       },
       imageMultiple: {
         title: '图片多选',
@@ -291,7 +293,7 @@ const model = reactive({
         accept: '.jpg,.png',
         action: '/api/upload',
         multiple: true,
-        rules,
+        rules: rules(),
       },
       // [prop()]: {
       //   title: 'object',

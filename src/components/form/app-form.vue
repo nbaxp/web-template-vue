@@ -11,15 +11,15 @@
   >
     <slot name="header">
       <h2
-        v-if="model.schema?.title"
+        v-if="schema?.title"
         class="text-center"
       >
-        {{ model.schema?.title }}
+        {{ schema?.title }}
       </h2>
     </slot>
     <app-form-item
       v-model="model.data"
-      :schema="model.schema"
+      :schema="schema"
       :validate="!model.disableValidation"
       :mode="model.mode"
       :errors="errors"
@@ -43,6 +43,7 @@ import log from '~/log';
 import request from '~/request';
 import { useAppStore } from '~/store';
 import { cloneDeep, schemaToModel } from '~/utils';
+import { format, messages } from '~/utils/validator.js';
 
 const props = defineProps({
   modelValue: {
@@ -62,14 +63,35 @@ const loading = ref(false);
 const disabled = ref(false);
 const errors = ref({});
 
+const schema = reactive(cloneDeep(model.schema ?? { properties: {} }));
+
+// 注意避免for循环中的闭包只有最后一个生效的问题
+const updateRules = (instance) => {
+  Object.values(instance.properties).forEach((property) => {
+    if (property.rules) {
+      const rules = Array.isArray(property.rules) ? property.rules : [property.rules];
+      Object.values(rules).forEach((rule) => {
+        if (rule.required) {
+          if (!rule.message) {
+            rule.message = messages.required;
+          }
+          if (rule.message.indexOf('%s') >= 0) {
+            rule.message = format(rule.message, property.title);
+          }
+        }
+        console.log(JSON.stringify(property));
+      });
+    }
+    if (property.properties) {
+      updateRules(property);
+    }
+  });
+};
+
+updateRules(schema);
+
 if (!model.data) {
-  if (!model.schema) {
-    model.schema = {};
-  }
-  if (!model.schema.properties) {
-    model.schema.properties = {};
-  }
-  model.data = schemaToModel(model.schema.properties);
+  model.data = schemaToModel(schema.properties);
   log.debug('schema => model：');
   log.debug(JSON.stringify(model.data, null, 2));
 }

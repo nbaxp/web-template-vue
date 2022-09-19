@@ -46,6 +46,7 @@
     "@ckeditor/ckeditor5-upload": "^35.1.0",
     "@ckeditor/ckeditor5-vue": "^4.0.1",
     "@vueuse/core": "^9.2.0",
+    "async-validator": "^4.2.5",
     "axios": "^0.27.2",
     "better-mock": "^0.3.6",
     "dayjs": "^1.11.5",
