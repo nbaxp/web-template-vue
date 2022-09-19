@@ -24,77 +24,43 @@
   <el-card class="m-2">
     <template #header>
       <div class="card-header">
-        <span>自定义 Button 按钮</span>
+        <span>Button 封装（loading）</span>
       </div>
     </template>
     <app-button
       type="primary"
       @click="onClick1"
-      >emit callback</app-button
+      >emit + callback 实现方式</app-button
     >
     <app-button
       ref="buttonRef"
       type="primary"
       @click="onClick2"
-      >ref expose</app-button
+      >ref + expose 实现方式</app-button
     >
   </el-card>
   <el-card class="m-2">
     <template #header>
       <div class="card-header">
-        <span>CKEditor 5</span>
+        <span>CKEditor 5 封装（upload）</span>
       </div>
     </template>
     <app-editor
       v-model="editorModel"
-      upload-url="http://localhost:8011/file/upload"
+      upload-url="upload"
     />
-    <div>{{ editorModel }}</div>
   </el-card>
   <el-card class="m-2">
     <template #header>
       <div class="card-header">
-        <span>组件封装</span>
+        <span>vue-echarts 封装</span>
       </div>
     </template>
-    <app-demo v-model="customModel" />
-    <div>{{ customModel }}</div>
-  </el-card>
-  <el-card class="m-2">
-    <template #header>
-      <div class="card-header">
-        <span>测试</span>
-      </div>
-    </template>
-    <el-form
-      ref="formRef"
-      :model="formModel"
-      :rules="formRules"
-      label-width="120px"
-    >
-      <el-form-item
-        prop="test"
-        label="test"
-      >
-        <app-demo
-          v-model="formModel.test"
-          type="datetime"
-        /><el-tag>formModel.test:{{ formModel }}</el-tag>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="primary"
-          @click="() => formRef.validate()"
-          >Create</el-button
-        >
-        <el-button @click="() => formRef.resetFields()">Reset</el-button></el-form-item
-      >
-    </el-form>
-    <div>{{ customModel }}</div>
+    <app-chart :option="echartOptions" />
   </el-card>
 </template>
 <script setup>
-import AppDemo from '~/components/app-demo.vue';
+import AppChart from '~/components/app-chart.vue';
 import AppEditor from '~/components/app-editor.vue';
 import { sleep } from '~/utils';
 
@@ -110,15 +76,25 @@ const onClick2 = async () => {
 //
 const editorModel = ref('');
 //
-const customModel = ref(null);
-//
-const formRef = ref(null);
-const formModel = reactive({
-  test: null,
-});
-const formRules = {
-  test: [{ required: true, message: '必填项', trigger: 'change' }],
+const echartOptions = {
+  title: {
+    text: '基础折线图',
+  },
+  xAxis: {
+    type: 'category',
+    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  },
+  yAxis: {
+    type: 'value',
+  },
+  series: [
+    {
+      data: [150, 230, 224, 218, 135, 147, 260],
+      type: 'line',
+    },
+  ],
 };
+//
 </script>
 <style scoped>
 .el-carousel__item h3 {

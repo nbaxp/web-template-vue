@@ -66,8 +66,7 @@ const model = reactive({
     properties: {
       userName: {
         type: 'string',
-        default: null,
-        placeholder: '用户名',
+        title: '用户名',
         prefix: 'user',
         rules: [
           {
@@ -78,8 +77,7 @@ const model = reactive({
       },
       password: {
         type: 'string',
-        default: null,
-        placeholder: '密码',
+        title: '密码',
         prefix: 'lock',
         input: 'password',
         showPassword: true,
