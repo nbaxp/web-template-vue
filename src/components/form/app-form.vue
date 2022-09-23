@@ -8,6 +8,7 @@
     :label-width="model.labelWidth ?? 'auto'"
     :label-suffix="model.labelSufix ?? '：'"
     :label-position="model.labelPosition"
+    :class="model.mode"
   >
     <slot name="header">
       <h2
@@ -43,7 +44,6 @@ import log from '~/log';
 import request from '~/request';
 import { useAppStore } from '~/store';
 import { cloneDeep, schemaToModel } from '~/utils';
-import { format, messages } from '~/utils/validator.js';
 
 const props = defineProps({
   modelValue: {
@@ -64,31 +64,6 @@ const disabled = ref(false);
 const errors = ref({});
 
 const schema = reactive(cloneDeep(model.schema ?? { properties: {} }));
-
-// 注意避免for循环中的闭包只有最后一个生效的问题
-const updateRules = (instance) => {
-  Object.values(instance.properties).forEach((property) => {
-    if (property.rules) {
-      const rules = Array.isArray(property.rules) ? property.rules : [property.rules];
-      Object.values(rules).forEach((rule) => {
-        if (rule.required) {
-          if (!rule.message) {
-            rule.message = messages.required;
-          }
-          if (rule.message.indexOf('%s') >= 0) {
-            rule.message = format(rule.message, property.title);
-          }
-        }
-        console.log(JSON.stringify(property));
-      });
-    }
-    if (property.properties) {
-      updateRules(property);
-    }
-  });
-};
-
-updateRules(schema);
 
 if (!model.data) {
   model.data = schemaToModel(schema.properties);

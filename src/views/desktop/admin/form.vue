@@ -25,7 +25,7 @@ import AppForm from '~/components/form/app-form.vue';
 
 const formRef = ref(null);
 
-const rules = () =>
+const getRules = () =>
   JSON.parse(
     JSON.stringify([
       {
@@ -39,10 +39,6 @@ const options = [
   { value: 'value2', label: 'option2' },
   { value: 'value3', label: 'option3' },
 ];
-
-let i = 0;
-
-const prop = () => `prop${(i += 1)}`;
 
 const model = reactive({
   data: null,
@@ -73,25 +69,55 @@ const model = reactive({
         title: 'Color',
         type: 'string',
         input: 'color',
-        rules: rules(),
+        rules: getRules(),
       },
       colorRgba: {
         title: 'RGBA Color',
         type: 'string',
         input: 'color',
         showAlpha: true,
-        rules: rules(),
+        rules: getRules(),
       },
       editor: {
         title: 'editor',
         type: 'string',
         input: 'editor',
-        rules: rules(),
+        rules: getRules(),
       },
-      input: {
-        title: '字符串',
+      input1: {
+        title: '字符串1',
         type: 'string',
-        rules: { type: 'string', required: true, whitespace: false, message: '%s invalid' },
+        rules: [{ required: true }, { len: 2 }],
+      },
+      input2: {
+        title: '字符串2',
+        type: 'string',
+        rules: { validator: 'compare', compare: 'input1' },
+      },
+      input3: {
+        title: '字符串3',
+        type: 'string',
+        rules: { type: 'date' },
+      },
+      remote1: {
+        title: '远程验证1',
+        type: 'string',
+        rules: { validator: 'remote', url: 'valid/test1', message: '%s 远程验证失败' },
+      },
+      remote2: {
+        title: '远程验证2',
+        type: 'string',
+        rules: { validator: 'remote', url: 'valid/test2' },
+      },
+      remote3: {
+        title: '远程验证3',
+        type: 'string',
+        rules: { validator: 'remote', url: 'valid/test3', message: '%s 远程验证失败' },
+      },
+      remote4: {
+        title: '远程验证4',
+        type: 'string',
+        rules: { validator: 'remote', url: 'valid/test4' },
       },
       number: {
         title: '数字',
@@ -99,13 +125,14 @@ const model = reactive({
         precision: 2,
         step: 0.5,
         min: 0,
-        max: 10,
-        rules: rules(),
+        max: 100,
+        rules: getRules(),
       },
       numberSlider: {
         title: '滑动输入',
         type: 'number',
         input: 'slider',
+        rules: { type: 'number', len: 10 },
       },
       numberRate: {
         title: '评分',
@@ -116,18 +143,20 @@ const model = reactive({
       boolean: {
         title: 'Boolean',
         type: 'boolean',
+        rules: { validator: 'true', message: '%s必须选中' },
       },
       booleanSwitch: {
         title: '开关',
         type: 'boolean',
         input: 'switch',
+        rules: { validator: 'true' },
       },
       radioGroup: {
         title: '单选框',
         type: 'string',
         input: 'radio-group',
         options,
-        rules: rules(),
+        rules: getRules(),
       },
       checkBoxGroup: {
         title: '复选框多选',
@@ -137,7 +166,6 @@ const model = reactive({
         },
         input: 'checkbox-group',
         options,
-        rules: rules(),
       },
       transfer: {
         title: '穿梭框多选',
@@ -147,14 +175,14 @@ const model = reactive({
         },
         input: 'transfer',
         options,
-        rules: rules(),
+        rules: getRules(),
       },
       select: {
         title: '单选',
         type: 'string',
         input: 'select',
         options,
-        rules: rules(),
+        rules: getRules(),
       },
       selectMultiple: {
         title: '多选',
@@ -165,14 +193,14 @@ const model = reactive({
         input: 'select',
         multiple: true,
         options,
-        rules: rules(),
+        rules: { len: 1 },
       },
       selectLazy1: {
         title: '单选懒加载',
         type: 'string',
         input: 'select',
         url: 'lazy/select1',
-        rules: rules(),
+        rules: getRules(),
       },
       selectLazy2: {
         title: '单选级联2',
@@ -180,7 +208,7 @@ const model = reactive({
         input: 'select',
         url: 'lazy/select2',
         parent: 'selectLazy1',
-        rules: rules(),
+        rules: getRules(),
       },
       selectLazy3: {
         title: '单选级联3',
@@ -188,7 +216,7 @@ const model = reactive({
         input: 'select',
         url: 'lazy/select3',
         parent: 'selectLazy2',
-        rules: rules(),
+        rules: getRules(),
       },
       cascader: {
         title: '级联',
@@ -199,7 +227,7 @@ const model = reactive({
         input: 'cascader',
         checkStrictly: true,
         options,
-        rules: rules(),
+        rules: getRules(),
       },
       cascaderMultiple: {
         title: '级联多选',
@@ -211,20 +239,20 @@ const model = reactive({
         checkStrictly: true,
         multiple: true,
         options,
-        rules: rules(),
+        rules: getRules(),
       },
       date: {
         title: '日期',
         type: 'string',
         input: 'date',
-        rules: rules(),
+        rules: { type: 'date' },
       },
       datetime: {
         title: '日期时间',
         type: 'string',
         input: 'datetime',
         disabledDate: (value) => value < new Date(),
-        rules: rules(),
+        rules: getRules(),
       },
       start: {
         title: '日期范围',
@@ -235,13 +263,13 @@ const model = reactive({
         input: 'daterange',
         end: 'end',
         disabledDate: '(value)=>value<new Date()',
-        rules: rules(),
+        rules: getRules(),
       },
       end: {
         title: 'string[datetime]',
         type: 'string',
         input: 'hidden',
-        rules: rules(),
+        rules: getRules(),
       },
       startDatetime: {
         title: '日期时间范围',
@@ -252,20 +280,20 @@ const model = reactive({
         input: 'datetimerange',
         end: 'endDatetime',
         disabledDate: '(value)=>value<new Date()',
-        rules: rules(),
+        rules: getRules(),
       },
       endDatetime: {
         title: 'string[datetime]',
         type: 'string',
         input: 'hidden',
-        rules: rules(),
+        rules: getRules(),
       },
       file: {
         title: '文件',
         type: 'string',
         input: 'file',
         action: 'upload',
-        rules: rules(),
+        rules: getRules(),
       },
       fileMultiple: {
         title: '文件多选',
@@ -275,7 +303,7 @@ const model = reactive({
         action: 'upload',
         multiple: true,
         accept: '.jpg,.png',
-        rules: rules(),
+        rules: getRules(),
       },
       image: {
         title: '图片',
@@ -283,7 +311,7 @@ const model = reactive({
         input: 'image',
         accept: '.jpg,.png',
         action: 'upload',
-        rules: rules(),
+        rules: getRules(),
       },
       imageMultiple: {
         title: '图片多选',
@@ -293,51 +321,50 @@ const model = reactive({
         accept: '.jpg,.png',
         action: '/api/upload',
         multiple: true,
-        rules: rules(),
+        rules: getRules(),
       },
-      // [prop()]: {
-      //   title: 'object',
-      //   type: 'object',
-      //   rules,
-      //   properties: {
-      //     [prop()]: {
-      //       title: 'object.string1[ui=text]',
-      //       type: 'string',
-      //       rules,
-      //     },
-      //     [prop()]: {
-      //       title: 'object.string2[ui=text]',
-      //       type: 'string',
-      //       rules,
-      //     },
-      //   },
-      // },
-      // [prop()]: {
-      //   title: 'array[items.tpye=object]',
-      //   type: 'array',
-      //   items: {
-      //     type: 'object',
-      //     properties: {
-      //       text: {
-      //         title: 'array.object.string[ui=text]',
-      //         type: 'string',
-      //         default: 'text1',
-      //         rules,
-      //       },
-      //       value: {
-      //         title: 'array.object.number[ui=text]',
-      //         type: 'number',
-      //         default: null,
-      //         rules,
-      //       },
-      //     },
-      //   },
-      //   default: [
-      //     { text: 'one', value: 1 },
-      //     { text: 'two', value: 2 },
-      //   ],
-      //   rules,
-      // },
+      objectProp: {
+        title: '嵌套对象',
+        type: 'object',
+        properties: {
+          prop1: {
+            title: '字段1',
+            type: 'string',
+            rules: getRules(),
+          },
+          prop2: {
+            title: '字段2',
+            type: 'string',
+            rules: getRules(),
+          },
+        },
+      },
+      arrayProp: {
+        title: '数组对象',
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            text: {
+              title: '字段1',
+              type: 'string',
+              default: 'text1',
+              rules: getRules(),
+            },
+            value: {
+              title: '字段2',
+              type: 'number',
+              default: null,
+              rules: getRules(),
+            },
+          },
+        },
+        default: [
+          { text: 'one', value: 1 },
+          { text: 'two', value: 2 },
+        ],
+        rules: getRules,
+      },
     },
   },
 });

@@ -45,7 +45,7 @@
         <span>CKEditor 5 封装（upload）</span>
       </div>
     </template>
-    <app-editor
+    <app-input-editor
       v-model="editorModel"
       upload-url="upload"
     />
@@ -61,7 +61,7 @@
 </template>
 <script setup>
 import AppChart from '~/components/app-chart.vue';
-import AppEditor from '~/components/app-editor.vue';
+import AppInputEditor from '~/components/form/input/app-input-editor.vue';
 import { sleep } from '~/utils';
 
 const buttonRef = ref(null);

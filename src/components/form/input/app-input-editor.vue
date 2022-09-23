@@ -3,7 +3,6 @@
     v-model="model"
     :editor="ClassicEditor"
     :config="editorConfig"
-    class="w-full"
     @ready="onReady"
   />
 </template>

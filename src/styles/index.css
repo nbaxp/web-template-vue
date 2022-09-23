@@ -83,6 +83,20 @@ button.el-button:focus {
   border-color: var(--el-button-border-color);
 }
 
+.el-form.query .el-slider,
+.el-form-item .el-form-item .el-input.el-input--suffix {
+  width: 195px;
+}
+
+.el-form-item.object .el-form-item {
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.el-form .ck.ck-editor {
+  width: 100%;
+}
+
 .router-link,
 .router-link-active {
   color: var(--el-text-color-primary);

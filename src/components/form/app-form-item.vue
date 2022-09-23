@@ -8,30 +8,32 @@
         <el-form-item
           :label="getLabel(value)"
           :label-width="getLabelWidth(value)"
-          :rules="value.rules"
+          class="object"
         >
           <app-form-item
             v-model="model[key]"
             :schema="schema.properties[key]"
-            :prefix="key"
             :validate="validate"
             :mode="mode"
+            :prefix="key"
+            :errors="errors"
           />
         </el-form-item>
       </template>
-      <template v-else-if="value.type === 'array' && value.items.type === 'object'">
+      <template v-else-if="value.type === 'array' && value.items?.type === 'object'">
         <el-form-item
           :label="getLabel(value)"
           :label-width="getLabelWidth(value)"
-          :rules="value.rules"
         >
-          <el-icon
+          <el-button
             v-if="!model[key].length"
-            class="cursor-pointer mx-2"
+            style="padding: 8px"
             @click="addItem(model[key], value.items.properties)"
           >
-            <i-ep-plus />
-          </el-icon>
+            <el-icon>
+              <i-ep-plus />
+            </el-icon>
+          </el-button>
         </el-form-item>
         <template
           v-for="(item, index) in model[key]"
@@ -43,21 +45,24 @@
               :schema="schema.properties[key].items"
               :prefix="key + '[' + index + ']'"
               :validate="validate"
-              :label="getLabel(value)"
-              :label-width="getLabelWidth(value)"
+              :errors="errors"
             />
-            <el-icon
-              class="cursor-pointer mx-2"
+            <el-button
+              style="margin-left: 8px; padding: 8px"
               @click="addItem(model[key], value.items.properties)"
             >
-              <i-ep-plus />
-            </el-icon>
-            <el-icon
-              class="cursor-pointer mx-2"
+              <el-icon>
+                <i-ep-plus />
+              </el-icon>
+            </el-button>
+            <el-button
+              style="margin-left: 8px; padding: 8px"
               @click="removeItem(model[key], index)"
             >
-              <i-ep-minus />
-            </el-icon>
+              <el-icon>
+                <i-ep-minus />
+              </el-icon>
+            </el-button>
           </el-form-item>
         </template>
       </template>
@@ -67,9 +72,9 @@
           :prop="getProp(key)"
           :label="getLabel(value)"
           :label-width="getLabelWidth(value)"
-          :rules="validate ? value.rules : null"
+          :rules="getRules(value)"
           :error="errors[getProp(key)]"
-          :title="key + ':' + JSON.stringify(model[key])"
+          :title="key + ':' + getProp(key) + ':' + JSON.stringify(model[key])"
           :style="itemStyle"
         >
           <app-form-input
@@ -85,6 +90,7 @@
 </template>
 <script setup>
 import { schemaToModel } from '~/utils';
+import { createRules } from '~/validation';
 
 const props = defineProps({
   modelValue: {
@@ -118,10 +124,9 @@ const emit = defineEmits(['update:modelValue', 'update:schema']);
 watch(model, (value) => {
   emit('update:modelValue', value);
 });
-watch(schema, (value) => {
-  emit('update:schema', value);
-});
-//
+// watch(schema, (value) => {
+//   emit('update:schema', value);
+// });
 const itemStyle = {
   width: props.mode === 'query' ? '30%' : null,
 };
@@ -129,25 +134,14 @@ const getProp = (key) => {
   return props.prefix ? `${props.prefix}.${key}` : key;
 };
 const getLabel = (value) => {
-  // if (props.mode === 'query') {
-  //   const type = value.input ?? value.type;
-  //   if (
-  //     type === 'string' ||
-  //     type === 'text' ||
-  //     type === 'date' ||
-  //     type === 'datetime' ||
-  //     type === 'daterange' ||
-  //     type === 'datetimerange' ||
-  //     type === 'select' ||
-  //     type === 'cascader'
-  //   ) {
-  //     return null;
-  //   }
-  // }
   return value.title;
 };
 const getLabelWidth = (value) => {
   return value.labelWidth ?? props.mode === 'query' ? '120px' : 'auto';
+};
+
+const getRules = (property) => {
+  return createRules(props.schema, property, model);
 };
 
 const showItem = (propertyName, propertySchema) => {
@@ -178,6 +172,7 @@ const showItem = (propertyName, propertySchema) => {
   }
   return true;
 };
+
 const addItem = (items, properties) => {
   if (items.length) {
     items.push(JSON.parse(JSON.stringify(items[items.length - 1])));
@@ -185,6 +180,7 @@ const addItem = (items, properties) => {
     items.push(schemaToModel(properties));
   }
 };
+
 const removeItem = (items, index) => {
   items.splice(index, 1);
 };

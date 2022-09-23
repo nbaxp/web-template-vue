@@ -7,6 +7,7 @@ import usePermission from './permission';
 import useRole from './role';
 import useUpload from './upload';
 import useUser from './user';
+import useValid from './valid';
 import useWebSocket from './web-socket';
 
 export default function useMock() {
@@ -24,6 +25,7 @@ export default function useMock() {
     timeout: '200-600',
   });
 
+  useValid();
   useLazy();
   useUpload();
   useAccount();
