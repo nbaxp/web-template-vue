@@ -1,0 +1,1 @@
+import{u as s,q as r,a2 as e,e as t,o as a}from"./index.bd10bac3.js";const c="0.1.0",n={class:"flex justify-center items-center w-full h-full"},_={__name:"layout-footer",setup(l){const o=s();return(p,u)=>(a(),r("div",n,e(t(o).copyright)+" v "+e(t(c)),1))}};export{_ as default};
