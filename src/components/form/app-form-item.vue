@@ -72,7 +72,7 @@
           :prop="getProp(key)"
           :label="getLabel(value)"
           :label-width="getLabelWidth(value)"
-          :rules="getRules(value)"
+          :rules="validate ? getRules(value) : []"
           :error="errors[getProp(key)]"
           :title="key + ':' + getProp(key) + ':' + JSON.stringify(model[key])"
           :style="itemStyle"
@@ -107,7 +107,7 @@ const props = defineProps({
   },
   validate: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   errors: {
     type: Object,
